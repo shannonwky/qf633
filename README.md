@@ -17,7 +17,7 @@ Github now uses PAT rather than account password as a form of verification. To g
 ## 2. Cloning the repository
 From the `terminal`, navigate to the desired location to store the project repository using the command `cd`. You may check the available directories/folders to navigate into using the `ls` command, and the `cd ..` command to move up one level. Once in the desired location, clone the repository by keying in the following command:
 ```
-git clone https://github.com/leongyr/qf635-group7.git
+git clone https://github.com/xueyuanhuang/QF633-C-for-Financial-Engineering.git
 ```
 The terminal should prompt you to enter your github username and password. The password here refers to the PAT generated in the earlier step, not your account password.
 
