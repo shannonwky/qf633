@@ -10,7 +10,7 @@ Github now uses PAT rather than account password as a form of verification. To g
 4. Select Fine-grained token under Personal access tokens
 5. Generate a new token with the following permissions \
     a. Expiration: 60 days \
-    b. Repository access: Only select repositories > qf635-group7 repository \
+    b. Repository access: Only select repositories > QF633-C-for-Financial-Engineering repository \
     c. Permissions: Set to Read and write for Actions, Administration, Commit Statuses, Contents, Issues and Pull Requests
 6. Save the generated token someplace save for future verification if required
 
