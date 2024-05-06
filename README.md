@@ -1,4 +1,4 @@
-# QF633-C-for-Financial-Engineering
+# QF633-C++-for-Financial-Engineering
 This repository is for the purpose of fulfilling QF633 group project requirements under the Quantitative Finance masters with Singapore Management University. It is strictly for educational purposes and does not constitute financial advice nor endorsement of any financial exchanges.
 
 ## 1. Creating your Personal Access Token (PAT)
