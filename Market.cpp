@@ -1,97 +1,79 @@
 #include "Market.h"
 
+using namespace std;
 
-// std::ostream& operator<<(std::ostream& os, const Market& mkt){
-//     os << mkt.asOf;
-//     return os;
+// void RateCurve::display() const {
+//     cout << "rate curve:" << name << endl;
+//     for (size_t i=0; i<tenors.size(); i++) {
+//       cout << tenors[i] << ":" << rates[i] << endl;
+//   }
+//   cout << endl;
 // }
 
-// std::istream& operator>>(std::istream& is, Market& mkt){
-//     is >> mkt.asOf;
-//     return is;
+// void RateCurve::addRate(Date tenor, double rate) {
+//   //consider to check if tenor already exist
+//   if (true){
+//     tenors.push_back(tenor);
+//     rates.push_back(rate);
+//   }  
 // }
 
-void Market::readMarket(){
-    std::ifstream bondPricesIn("bondPrices.txt");
-    if(bondPricesIn){
-        std::string bondName;
-        double bondPrice;
-        while(bondPricesIn >> bondName >> bondPrice){
-            this->bondPrices[bondName] = bondPrice;
-        }
-    }else{
-        std::cerr << "error for opening for bondPrices.txt" << std::endl;
-    }
+// double RateCurve::getRate(Date tenor) const {
+//   //use linear interpolation to get rate
+//   return 0;
 
-    std::ifstream stockPricesIn("stockPrices.txt");
-    if(stockPricesIn){
-        std::string stockName;
-        double stockPrice;
-        while(stockPricesIn >> stockName >> stockPrice){
-            this->stockPrices[stockName] = stockPrice;
-        }
-    }else{
-        std::cerr << "error for opening for stocksPrices.txt" << std::endl;
-    }
-}
+// }
 
-void Market::Print() const{
-    std::cout << "maket asof: " << asOf << std::endl;
-
-    std::cout << "bondPrices:" << std::endl;
-    for(auto bondPrice: bondPrices){
-        std::cout << "Name:" << bondPrice.first << "->" << "Price:" << bondPrice.second << std::endl;
-    }
-
-    std::cout << "stockPrices:" << std::endl;
-    for(auto stockPrice: stockPrices){
-        std::cout << "Name:" << stockPrice.first << "->" << "Price:" << stockPrice.second << std::endl;
-    }
-
-    std::cout << "rate curve:" << std::endl;
-    for(auto rateCurve: rateCurves){
-        std::cout << "curveName:" << rateCurve.first << std::endl;
-        rateCurve.second.display();
-    }
-
-    std::cout << "vol curve:" << std::endl;
-    for(auto volCurve: volCurves){
-        std::cout << "vol curve Name" << volCurve.first << std::endl;
-        volCurve.second.display();
-    }
-}
-
-void Market::addRateCurve(const std::string& rateCurveName, const RateCurve& rateCurve){
-    rateCurves[rateCurveName] = rateCurve;
-}
-
-void Market::addVolCurve(const std::string& volCurveName, const VolCurve& volCurve){
-    volCurves[volCurveName] = volCurve;
-}
-
-void RateCurve::addRate(const Date& tenor, double rate){
-    tenors.push_back(tenor);
-    rates.push_back(rate);
-}
-
+// Implement the display function outside the class declaration
 void RateCurve::display() const {
-    std::cout << "RateCurve Name:" << name << std::endl;
-    for(size_t i = 0; i < tenors.size(); i++){
-        std::cout << tenors[i] << ":" << rates[i] << std::endl;
+    std::cout << "Rate curve:" << std::endl;
+    for (size_t i = 0; i < X.size(); i++) {
+        std::cout << X[i] << ":" << Y[i] << std::endl;
     }
+    std::cout << std::endl;
 }
 
-void VolCurve::addVol(const Date& tenor, double vol){
-    tenors.push_back(tenor);
-    vols.push_back(vol);
-}
+
+
+
+
+
+
+
+
 
 void VolCurve::display() const {
-    std::cout << "VolCurve Name:" << name << std::endl;
-    for(size_t i = 0; i < tenors.size(); i++){
-        std::cout << tenors[i] << ": " << vols[i] << std::endl;
-    }
+
 }
-// void Market::addBondPrice(const std::string& bondName, double price){
-//     bondPrices[bondName] = price;
-// }
+
+void Market::Print() const
+{
+  cout << "market asof: " << asOf << endl;
+  
+  for (auto curve: curves) {
+    curve.second.display();
+  }
+  for (auto vol: vols) {
+    vol.second.display();
+  }
+  /*
+  add display for bond price and stock price
+  
+  */
+}
+
+void Market::addCurve(const std::string& curveName, const RateCurve& curve){
+  curves.emplace(curveName, curve);
+}
+
+std::ostream& operator<<(std::ostream& os, const Market& mkt)
+{
+  os << mkt.asOf << std::endl;
+  return os;
+}
+
+std::istream& operator>>(std::istream& is, Market& mkt)
+{
+  is >> mkt.asOf;
+  return is;
+}
