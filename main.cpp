@@ -5,13 +5,15 @@
 #include "Date.cpp"
 #include "Market.cpp"
 #include "Pricer.cpp"
+#include "Swap.cpp"
 
 #include "Market.h"
 #include "Pricer.h"
 #include "EuropeanTrade.h"
+#include "AmericanTrade.h"
 #include "Bond.h"
 #include "Swap.h"
-#include "AmericanTrade.h"
+
 
 
 
@@ -54,12 +56,11 @@ int main()
   curve.addRate("10Y", 3.9);
   //curve.addRate("4M",curve.getRate("4M"));
 
+  // Display the rate curve
+  curve.display();
+
   // Get rate for a specific tenor (example)
   std::cout << "Rate at 4M: " << curve.getRate("4M") << std::endl;
-
-  // Display the rate curve
-  //curve.display();
-
 
 
 
@@ -67,17 +68,42 @@ int main()
   //for each time, at least should have long / short, different tenor or expiry, different underlying
   //totally no less than 16 trades
   vector<Trade*> myPortfolio;
+
+  //Bonds
   Trade* bond = new Bond(Date(2024, 1, 1), Date(2034, 1, 1), 10000000, 103.5);
   myPortfolio.push_back(bond);
 
 
-  //task 3, create a pricer and price the portfolio, output the pricing result of each deal.
-  Pricer* treePricer = new CRRBinomialTreePricer(10);
-  for (auto trade: myPortfolio) {
-    double pv = treePricer->Price(mkt, trade);
-    //log pv details out in a file
+  // Example: Adding a dummy Swap trade to the portfolio
+  // Date startDate = Date(2023, 1, 1); // Example start date
+  // Date endDate = Date(2025, 1, 1);   // Example end date
+  // double notional = 100;
+  // double tradeRate = 0.05;  // 5% trade rate
+  // double frequency = 1;     // Annual payments
+  // Swap* swapTrade = new Swap(startDate, endDate, notional, tradeRate, tradeRate, frequency);
+  // myPortfolio.push_back(swapTrade);
 
+  //task 3, create a pricer and price the portfolio, output the pricing result of each deal.
+  // Create a CRRBinomialTreePricer with 10 time steps
+  Pricer* treePricer = new CRRBinomialTreePricer(10);
+  std::ofstream logFile("pricing_log.txt");
+
+  // Iterate through the portfolio and price each trade
+  for (auto trade : myPortfolio) {
+      double pv = treePricer->Price(mkt, trade);
+      logFile << "Trade with expiry: " << trade->GetExpiry() << " has PV: " << pv << std::endl;
   }
+
+  logFile.close();
+
+  // Clean up
+  delete treePricer;
+  for (auto trade : myPortfolio) {
+      delete trade;
+  }
+
+
+
 
   //task 4, analyzing pricing result
   // a) compare CRR binomial tree result for an european option vs Black model

@@ -3,17 +3,22 @@
 
 #include <iostream>
 
-class Date{
-public:
-    int year;
-    int month;
-    int day;
-    Date(int y, int m, int d): year(y), month(m), day(d){};
-    Date(){};
-};
+class Date
+{
+ public:
+  int year;
+  int month;
+  int day;
+  Date(int y, int m, int d) : year(y), month(m), day(d) {};
+  Date(){};
 
-std::ostream& operator<<(std::ostream& os, const Date& date);
-std::istream& operator>>(std::istream& is, Date& date);
+  friend double operator-(const Date& d1, const Date& d2);
+  friend std::ostream& operator<<(std::ostream& os, const Date& d);
+  friend std::istream& operator>>(std::istream& is, const Date& d);
+
+  double GetYearFraction() const;
+  
+};
 
 
 #endif

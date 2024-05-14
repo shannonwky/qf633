@@ -39,9 +39,6 @@ void RateCurve::display() const {
 
 
 
-
-
-
 void VolCurve::display() const {
 
 }

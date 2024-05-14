@@ -1,13 +1,26 @@
 #include "Date.h"
 
-std::ostream& operator<<(std::ostream& os, const Date& date){
-    os << date.year << " " << date.month << " " << date.day;
-
-    return os;
+double operator-(const Date& d1, const Date& d2)
+{
+  int yearDiff = d1.year - d2.year;
+  int monthDiff = (d1.month - d2.month);
+  int dayDiff = d1.day - d2.day;
+  return yearDiff + monthDiff / 12.0 + dayDiff / 365.0;
 }
 
-std::istream& operator>>(std::istream& is, Date& date){
-    is >> date.year >> date.month >> date.day;
+std::ostream& operator<<(std::ostream& os, const Date& d)
+{
+  os << d.year << " " << d.month << " " << d.day << std::endl;
+  return os;
+}
 
-    return is;
+std::istream& operator>>(std::istream& is, Date& d)
+{
+  is >> d.year >> d.month >> d.day;
+  return is;
+}
+
+double Date::GetYearFraction() const
+{
+    return year + month / 12.0 + day / 365.0;
 }
