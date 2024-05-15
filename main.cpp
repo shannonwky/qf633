@@ -1,6 +1,12 @@
 #include <fstream>
 #include <ctime>
 #include <chrono>
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <algorithm> // For the trim function
+
+
 
 #include "Date.cpp"
 #include "Market.cpp"
@@ -15,18 +21,74 @@
 #include "Swap.h"
 
 
-
+#include <iostream>
+#include <string>
 
 using namespace std;
 
 void readFromFile(const string& fileName, string& outPut){
   string lineText;
   ifstream MyReadFile(fileName);
+  // Skip the first line
+    if (getline(MyReadFile, lineText)) {
+        // Successfully read and skipped the first line
+    }
   while (getline (MyReadFile, lineText)) {
     outPut.append(lineText);
   }
   MyReadFile.close();
 }
+
+// Trim whitespace from the beginning and end of a string
+std::string trim(const std::string& str) {
+    size_t start = str.find_first_not_of(" \t\r\n");
+    size_t end = str.find_last_not_of(" \t\r\n");
+    if (start == std::string::npos) {
+        return ""; // Empty string or whitespace only
+    }
+    return str.substr(start, end - start + 1);
+}
+
+void readRatesFromFile(const string& fileName, vector<string>& tenors, vector<double>& rates) {
+    ifstream inputFile(fileName);
+
+    if (!inputFile.is_open()) {
+        cerr << "Error: Could not open the file." << endl;
+        return;
+    }
+
+    string line;
+    // Skip the first line (header)
+    getline(inputFile, line);
+
+    while (getline(inputFile, line)) {
+        size_t colonPos = line.find(':');
+        size_t percentPos = line.find('%');
+
+        if (colonPos == string::npos || percentPos == string::npos) {
+            cerr << "Error: Incorrect format in line: " << line << endl;
+            continue;
+        }
+
+        try {
+            string tenor = line.substr(0, colonPos); // Convert to string
+            // Convert "0" to string literal
+            if (tenor == "0") {
+                tenor = "0"; // or tenor = "0" + tenor;
+            }
+            double rate = stod(line.substr(colonPos + 1, percentPos - colonPos - 1));
+            
+            tenors.push_back(tenor);
+            rates.push_back(rate);
+        } catch (const exception& e) {
+            cerr << "Exception occurred while parsing line: " << line << endl;
+            cerr << e.what() << endl;
+        }
+    }
+
+    inputFile.close();
+}
+
 
 int main()
 {
@@ -43,24 +105,24 @@ int main()
   load data from file and update market object with data
   */
 
-    RateCurve curve;
 
-  // Add rates (example)
-  curve.addRate("0M", 5.56);
-  curve.addRate("3M", 5.5);
-  curve.addRate("6M", 5.45);
-  curve.addRate("9M", 5.4);
-  curve.addRate("1Y", 5.53);
-  curve.addRate("2Y", 5.34);
-  curve.addRate("5Y", 4.75);
-  curve.addRate("10Y", 3.9);
-  //curve.addRate("4M",curve.getRate("4M"));
+// Read rates and interpolate
+  RateCurve curve;
+    vector<string> tenors;
+    vector<double> rates;
 
-  // Display the rate curve
+    // Assuming your file is named "curve.txt"
+    readRatesFromFile("curve.txt", tenors, rates);
+
+    // Display the contents of tenors and rates
+    for (size_t i = 0; i < tenors.size(); ++i) {
+        curve.addRate(tenors[i], rates[i]);
+    }
+  
   curve.display();
 
   // Get rate for a specific tenor (example)
-  std::cout << "Rate at 4M: " << curve.getRate("4M") << std::endl;
+    //std::cout << "Rate at 4M: " << curve.getRate("4M") << std::endl;
 
 
 
