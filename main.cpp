@@ -6,6 +6,8 @@
 // #include "Market.cpp"
 #include "Bond.h"
 #include "Swap.h"
+#include "Payoff.h"
+// #include "Types.h"
 // #include "Pricer.cpp"
 
 // #include "Market.h"
@@ -39,7 +41,11 @@ int main()
 
     Swap swap{Date(2022, 1, 1), Date(2025, 1, 1), Date(2023, 4, 1), Date(2024, 5, 16), 100000, 0.03, 4};
     std::cout << swap.Payoff(0.02) << std::endl;
+
+    OptionType op = Call;
+    PAYOFF::CallSpread
   }
+
   // //task 1, create an market data object, and update the market data from from txt file
   // std::time_t t = std::time(0);
   // auto now_ = std::localtime(&t);
