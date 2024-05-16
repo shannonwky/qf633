@@ -12,6 +12,7 @@ public:
     Date(){};
 };
 
+double operator-(const Date& d1, const Date& d2);
 std::ostream& operator<<(std::ostream& os, const Date& date);
 std::istream& operator>>(std::istream& is, Date& date);
 
