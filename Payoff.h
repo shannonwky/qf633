@@ -25,8 +25,8 @@ namespace PAYOFF
         if (S < strike1)
             return 0;
         else if (S > strike2)
-            return 1;
+            return strike2 - strike1;
         else
-            return (S - strike1) / (strike2 - strike1);
+            return S - strike1;
     }
 }
