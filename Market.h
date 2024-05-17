@@ -8,24 +8,7 @@
 #include <string>
 #include "spline.h" // Include the spline header if needed
 
-
-
 using namespace std;
-
-// class RateCurve {
-// public:
-//   RateCurve(){};
-//   RateCurve(const string& _name): name(_name) {} ; 
-//   void addRate(Date tenor, double rate);
-//   double getRate(Date tenor) const; //implement this function using linear interpolation
-//   void display() const;
-
-// private:
-//   std::string name;
-//   vector<Date> tenors;
-//   vector<double> rates;
-
-// };
 
 
 class RateCurve {
@@ -58,26 +41,34 @@ public:
     // Function to get the rate using linear interpolation
     double getRate(const std::string& tenorStr) const {
         double tenor = convertToYears(tenorStr);
-        
-        // Find the two closest tenors
-        size_t i = 0;
-        while (i < X.size() && X[i] < tenor) {
-            i++;
-        }
 
-        // Perform linear interpolation
-        if (i == 0) {
-            return Y[0]; // Extrapolation: Return the first rate
-        } else if (i == X.size()) {
-            return Y.back(); // Extrapolation: Return the last rate
-        } else {
-            // Interpolation between X[i-1] and X[i]
-            double x0 = X[i - 1];
-            double x1 = X[i];
-            double y0 = Y[i - 1];
-            double y1 = Y[i];
-            return y0 + (y1 - y0) * ((tenor - x0) / (x1 - x0));
-        }
+        tk::spline s(X, Y);
+        double interpolatedY = s(tenor);
+        // double derivative = s.deriv(1, x);
+
+        // Output the interpolated value and its derivative (if necessary)
+        std::cout << "Interpolated value at x=" << tenor << " is " << interpolatedY << std::endl;
+
+
+        // // Find the two closest tenors
+        // size_t i = 0;
+        // while (i < X.size() && X[i] < tenor) {
+        //     i++;
+        // }
+
+        // // Perform linear interpolation
+        // if (i == 0) {
+        //     return Y[0]; // Extrapolation: Return the first rate
+        // } else if (i == X.size()) {
+        //     return Y.back(); // Extrapolation: Return the last rate
+        // } else {
+        //     // Interpolation between X[i-1] and X[i]
+        //     double x0 = X[i - 1];
+        //     double x1 = X[i];
+        //     double y0 = Y[i - 1];
+        //     double y1 = Y[i];
+        //     return y0 + (y1 - y0) * ((tenor - x0) / (x1 - x0));
+        // }
     }
 
     // Function to display the rate curve
