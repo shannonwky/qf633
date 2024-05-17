@@ -49,6 +49,7 @@ public:
         // Output the interpolated value and its derivative (if necessary)
         std::cout << "Interpolated value at x=" << tenor << " is " << interpolatedY << std::endl;
 
+        return 0;
 
         // // Find the two closest tenors
         // size_t i = 0;
