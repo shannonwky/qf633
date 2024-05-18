@@ -155,28 +155,51 @@ int main()
 
   //task 3, create a pricer and price the portfolio, output the pricing result of each deal.
   // Create a CRRBinomialTreePricer with 10 time steps
-  Pricer* treePricer = new CRRBinomialTreePricer(10);
-  std::ofstream logFile("pricing_log.txt");
+//   Pricer* treePricer = new CRRBinomialTreePricer(10);
+//   std::ofstream logFile("pricing_log.txt");
 
-  // Iterate through the portfolio and price each trade
-  for (auto trade : myPortfolio) {
-      double pv = treePricer->Price(mkt, trade);
-      logFile << "Trade with expiry: " << trade->GetExpiry() << " has PV: " << pv << std::endl;
-  }
+//   // Iterate through the portfolio and price each trade
+//   for (auto trade : myPortfolio) {
+//       double pv = treePricer->Price(mkt, trade);
+//       logFile << "Trade with expiry: " << trade->GetExpiry() << " has PV: " << pv << std::endl;
+//   }
 
-  logFile.close();
+//   logFile.close();
 
-  // Clean up
-  delete treePricer;
-  for (auto trade : myPortfolio) {
-      delete trade;
-  }
+//   // Clean up
+//   delete treePricer;
+//   for (auto trade : myPortfolio) {
+//       delete trade;
+//   }
 
 
   //task 4, analyzing pricing result
   // a) compare CRR binomial tree result for an european option vs Black model
   // b) compare CRR binomial tree result for an american option vs european option
  
+    std::cout << "\nTask 4" << std::endl;
+    double S = 100.0;  // Underlying asset price
+    double r = 0.03;   // Risk-free rate
+    double vol = 0.2;  // Volatility
+    int n = 2;       // Number of steps
+
+    EuropeanOption callOption(1.0, 105.0, OptionType::Call);
+    double price = binomialPricer(S, r, vol, callOption, n, crrCalib);
+    std::cout << "European Call Option Price: " << price << std::endl;
+
+    AmericanOption putOption(1.0, 100.0, OptionType::Put);
+    price = binomialPricer(S, r, vol, putOption, n, crrCalib);
+    std::cout << "American Put Option Price: " << price << std::endl;
+
+    // Calculate Black model price
+    double T = 1.0;       // Time to expiration (in years)
+    double strike = 105.0; // Strike price
+    OptionType payoffType = OptionType::Call;
+    double blackOptionPrice = blackPrice(S, r, vol, T, strike, payoffType);
+    std::cout << "Black Model European Option Price: " << blackOptionPrice << std::endl;
+
+
+
 
 
   //final
