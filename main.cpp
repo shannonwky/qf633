@@ -83,14 +83,6 @@ void readRatesFromFile(const string& fileName, vector<string>& tenors, vector<do
 
 int main()
 {
-
-  
-  // if (1)
-  // {
-  //   // Trade t{"bond", Date(2025, 1,1)};
-  //   Bond b{Date(2021, 1, 1), Date(2022, 1, 1), 100, 98};
-  //   std::cout << b.Payoff(102) << std::endl;
-
   //task 1, create an market data object, and update the market data from from txt file 
   std::time_t t = std::time(0);
   auto now_ = std::localtime(&t);
