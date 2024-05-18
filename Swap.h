@@ -13,6 +13,9 @@ public:
     double Payoff(double marketRate) const override;
     double getAnnuity(double marketRate) const;
 
+    // double getRateFromCurve(double time) const;
+    // double getDiscountFactor(double rate, double time) const;
+
 
 //     implement this, using pv = annuity * (trade rate - market rate);
 //     approximately, annuity = sum of (notional * Discount factor at each period end);

@@ -17,7 +17,8 @@
 
 using namespace std;
 
-void readFromFile(const string& fileName, string& outPut){
+void readFromFile(const string &fileName, string &outPut)
+{
   string lineText;
   ifstream MyReadFile(fileName);
   // Skip the first line
@@ -83,18 +84,12 @@ void readRatesFromFile(const string& fileName, vector<string>& tenors, vector<do
 
 int main()
 {
-  //task 1, create an market data object, and update the market data from from txt file 
-  std::time_t t = std::time(0);
-  auto now_ = std::localtime(&t);
-  Date valueDate;
-  valueDate.year = now_->tm_year + 1900;
-  valueDate.month = now_->tm_mon + 1;
-  valueDate.year = now_->tm_mday;
 
-  Market mkt = Market(valueDate);
-  /*
-  load data from file and update market object with data
-  */
+  // if (1)
+  // {
+  //   // Trade t{"bond", Date(2025, 1,1)};
+  //   Bond b{Date(2021, 1, 1), Date(2022, 1, 1), 100, 98};
+  //   std::cout << b.Payoff(102) << std::endl;
 
 
 // Read rates and interpolate
@@ -146,32 +141,39 @@ int main()
 
   //task 3, create a pricer and price the portfolio, output the pricing result of each deal.
   // Create a CRRBinomialTreePricer with 10 time steps
-  Pricer* treePricer = new CRRBinomialTreePricer(10);
-  std::ofstream logFile("pricing_log.txt");
+  // Pricer* treePricer = new CRRBinomialTreePricer(10);
+  // std::ofstream logFile("pricing_log.txt");
 
-  // Iterate through the portfolio and price each trade
-  for (auto trade : myPortfolio) {
-      double pv = treePricer->Price(mkt, trade);
-      logFile << "Trade with expiry: " << trade->GetExpiry() << " has PV: " << pv << std::endl;
-  }
+  // // Iterate through the portfolio and price each trade
+  // for (auto trade : myPortfolio) {
+  //     double pv = treePricer->Price(mkt, trade);
+  //     logFile << "Trade with expiry: " << trade->GetExpiry() << " has PV: " << pv << std::endl;
+  // }
 
-  logFile.close();
+  // logFile.close();
 
-  // Clean up
-  delete treePricer;
-  for (auto trade : myPortfolio) {
-      delete trade;
-  }
-
-
+  // // Clean up
+  // delete treePricer;
+  // for (auto trade : myPortfolio) {
+  //     delete trade;
+  // }
 
 
   //task 4, analyzing pricing result
   // a) compare CRR binomial tree result for an european option vs Black model
   // b) compare CRR binomial tree result for an american option vs european option
 
+
+  //task 1?
+  // Market mkt = Market(valueDate);
+  // /*
+  // load data from file and update market object with data
+  // */
+
+ 
+
+
   //final
   cout << "Project build successfully!" << endl;
   return 0;
-
 }

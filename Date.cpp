@@ -20,7 +20,16 @@ std::istream& operator>>(std::istream& is, Date& d)
   return is;
 }
 
-double Date::GetYearFraction() const
-{
-    return year + month / 12.0 + day / 365.0;
-}
+// double Date::GetYearFraction() const
+// {
+//     return year + month / 12.0 + day / 365.0;
+
+
+// double operator-(const Date &d1, const Date &d2)
+// {
+//     int yearDiff = d1.year - d2.year;
+//     int monthDiff = d1.month - d2.month;
+//     int dayDiff = d1.day - d2.day;
+
+//     return yearDiff + monthDiff / 12.0 + dayDiff / 365.0;
+// }
