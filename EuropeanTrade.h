@@ -1,7 +1,7 @@
 // #ifndef _EUROPEAN_TRADE
 // #define _EUROPEAN_TRADE
 
-// #include <cassert> 
+// #include <cassert>
 
 // #include "TreeProduct.h"
 // #include "Payoff.h"
@@ -23,8 +23,8 @@
 
 // class EuroCallSpread : public EuropeanOption {
 // public:
-//     EuroCallSpread(double _k1, double _k2, const Date& _expiry): strike1(_k1), strike2(_k2), expiryDate(_expiry) { 
-//         assert(_k1 < _k2); 
+//     EuroCallSpread(double _k1, double _k2, const Date& _expiry): strike1(_k1), strike2(_k2), expiryDate(_expiry) {
+//         assert(_k1 < _k2);
 //       };
 //     virtual double Payoff(double S) const { return PAYOFF::CallSpread(strike1, strike2, S); };
 //     virtual const Date& GetExpiry() const { return expiryDate; };
@@ -44,26 +44,38 @@
 #include <stdexcept>
 #include "Types.h"
 
-class EuropeanOption {
+class EuropeanOption
+{
 public:
     EuropeanOption(double expiry, double strike, OptionType payoffType)
         : expiry(expiry), strike(strike), payoffType(payoffType) {}
 
-    double payoff(double S) const {
-        if (payoffType == OptionType::Call) {
+    double payoff(double S) const
+    {
+        if (payoffType == OptionType::Call)
+        {
             return std::max(S - strike, 0.0);
-        } else if (payoffType == OptionType::Put) {
+        }
+        else if (payoffType == OptionType::Put)
+        {
             return std::max(strike - S, 0.0);
-        } else if (payoffType == OptionType::BinaryCall) {
+        }
+        else if (payoffType == OptionType::BinaryCall)
+        {
             return (S >= strike) ? 1.0 : 0.0;
-        } else if (payoffType == OptionType::BinaryPut) {
+        }
+        else if (payoffType == OptionType::BinaryPut)
+        {
             return (S <= strike) ? 1.0 : 0.0;
-        } else {
+        }
+        else
+        {
             throw std::invalid_argument("Unsupported payoffType");
         }
     }
 
-    double valueAtNode(double t, double S, double continuation) const {
+    double valueAtNode(double t, double S, double continuation) const
+    {
         return continuation;
     }
 
@@ -78,4 +90,3 @@ private:
 };
 
 #endif
-
