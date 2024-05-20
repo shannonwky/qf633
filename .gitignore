@@ -30,4 +30,10 @@
 *.exe
 *.out
 *.app
+
+#something else
 .vscode
+Pricer.dSYM/Contents
+main.dSYM/Contents
+
+
