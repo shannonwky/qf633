@@ -12,7 +12,7 @@ public:
     virtual double Payoff(double marketPrice) const = 0;
     virtual const Date& GetExpiry() const 
     { 
-    return expiryDate;
+    return expiryDate; //tft: maybe it's expiry instead? kiv
     }
     //virtual Date GetExpiry() const = 0; //Added new
     virtual ~Trade(){};

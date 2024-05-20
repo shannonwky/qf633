@@ -2,17 +2,24 @@
 #include <ctime>
 #include <chrono>
 
-// #include "Date.cpp"
-// #include "Market.cpp"
-// #include "Pricer.cpp"
-// #include "Swap.cpp"
+#include "Date.cpp"
+#include "Market.cpp"
+#include "Pricer.cpp"
+#include "Swap.cpp"
+#include "BlackModelPricer.cpp"
 
 #include "Market.h"
 #include "Pricer.h"
+#include "BlackModelPricer.h"
 #include "EuropeanTrade.h"
 #include "AmericanTrade.h"
 #include "Bond.h"
 #include "Swap.h"
+#include "Trade.h"
+#include "TreeProduct.h"
+#include "Types.h"
+#include "Payoff.h"
+
 
 using namespace std;
 
@@ -169,28 +176,42 @@ int main()
   //  a) compare CRR binomial tree result for an european option vs Black model
   //  b) compare CRR binomial tree result for an american option vs european option
 
-  std::cout << "\nTask 4" << std::endl;
-  double S = 100.0; // Underlying asset price
-  double r = 0.03;  // Risk-free rate
-  double vol = 0.2; // Volatility
-  int n = 2;        // Number of steps
+  //Setup Market Data
+    Date asOf(2024, 5, 19);
+    Market market(asOf);
 
-  EuropeanOption callOption(1.0, 105.0, OptionType::Call);
-  double price = binomialPricer(S, r, vol, callOption, n, crrCalib);
-  std::cout << "European Call Option Price: " << price << std::endl;
+    Date expiry(2025, 5, 19);
+    double strike = 105.0;
+    int nTimeSteps = 2;
 
-  AmericanOption putOption(1.0, 100.0, OptionType::Put);
-  price = binomialPricer(S, r, vol, putOption, n, crrCalib);
-  std::cout << "American Put Option Price: " << price << std::endl;
 
-  // Calculate Black model price
-  double T = 1.0;        // Time to expiration (in years)
-  double strike = 105.0; // Strike price
-  OptionType payoffType = OptionType::Call;
-  double blackOptionPrice = blackPrice(S, r, vol, T, strike, payoffType);
-  std::cout << "Black Model European Option Price: " << blackOptionPrice << std::endl;
+    std::cout << "\nTask 4" << std::endl;
+
+    // European fully working
+    OptionType optType = Call; 
+    EuropeanOption europeanOption(expiry, strike, optType);
+    CRRBinomialTreePricer crrPricer(nTimeSteps);
+    double crrPrice = crrPricer.PriceTree(market, europeanOption);
+    cout << "CRR Binomial Tree Price for European Call: " << crrPrice << endl;   
+    ////End of European 
+
+    //American fully working
+    OptionType optType2 = Put; 
+    AmericanOption americanOption(expiry, strike, optType2);
+    CRRBinomialTreePricer crrPricer2(nTimeSteps);
+    double crrPrice2 = crrPricer2.PriceTree(market, americanOption);
+    cout << "CRR Binomial Tree Price for American Put: " << crrPrice2 << endl;  
+    ////End of American
+
+    //Black Model fully working
+    // Change of parameters in Pricer.cpp
+    EuropeanOption option(expiry, 105, Put);
+    BlackPricer pricer;
+    double price = pricer.Price(market, &option);
+    std::cout << "Black Model Option price: " << price << std::endl;
+
 
   // final
-  cout << "Project build successfully!" << endl;
+  cout << "\nProject build successfully!" << endl;
   return 0;
 }

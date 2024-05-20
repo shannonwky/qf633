@@ -13,7 +13,7 @@ public:
         tradeType = "TreeProduct";
     };
     virtual const Date& GetExpiry() const = 0;
-    virtual double ValueAtNode(double stockPrice, double t, double continuationValue) const = 0;
+    virtual double ValueAtNode(double S, double t, double continuation) const = 0;
 };
 
 #endif

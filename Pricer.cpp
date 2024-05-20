@@ -1,61 +1,84 @@
-#include <tuple>
 #include <cmath>
 #include "Pricer.h"
+#include "BlackModelPricer.h"
 
-std::tuple<double, double, double> crrCalib(double r, double vol, double t) {
-    double b = std::exp(vol * vol * t + r * t) + std::exp(-r * t);
-    double u = (b + std::sqrt(b * b - 4)) / 2;
-    double p = (std::exp(r * t) - (1 / u)) / (u - 1 / u);
-    return std::make_tuple(u, 1/u, p);
+
+double Pricer::Price(const Market& mkt, Trade* trade) {
+  double pv;
+  if (trade->getType() == "TreeProduct") {
+    TreeProduct* treePtr = dynamic_cast<TreeProduct*>(trade);
+    if (treePtr) { //check if cast is sucessful
+      pv = PriceTree(mkt, *treePtr);
+    }
+  }
+  else{
+    double price; //get from market data
+    pv = trade->Payoff(price);
+  }
+
+  return pv;
 }
 
-std::tuple<double, double, double> jrrnCalib(double r, double vol, double t) {
-    double u = std::exp((r - vol * vol / 2) * t + vol * std::sqrt(t));
-    double d = std::exp((r - vol * vol / 2) * t - vol * std::sqrt(t));
-    double p = (std::exp(r * t) - d) / (u - d);
-    return std::make_tuple(u, d, p);
+//Black Model
+double BlackPricer::Price(const Market& mkt, Trade* trade) {
+    BlackModelPricer pricer;
+    double S = 100; // Example spot price, get actual data from Market
+    double r = 0.05; // Example risk-free rate, get actual data from Market
+    double vol = 0.2; // Example volatility, get actual data from Market
+    double T = trade->GetExpiry() - mkt.asOf; // Time to maturity
+    double strike = 105; // Example strike, get actual data from Trade
+
+    OptionType optType = BinaryPut; // Example option type, get actual data from Trade
+    return pricer.Price(S, r, vol, T, strike, optType);
 }
 
-std::tuple<double, double, double> jreqCalib(double r, double vol, double t) {
-    double u = std::exp((r - vol * vol / 2) * t + vol * std::sqrt(t));
-    double d = std::exp((r - vol * vol / 2) * t - vol * std::sqrt(t));
-    return std::make_tuple(u, d, 0.5);
+
+//Binomial Tree Model
+double BinomialTreePricer::PriceTree(const Market& mkt, const TreeProduct& trade) {
+  // model setup
+  double T = trade.GetExpiry() - mkt.asOf;
+  double dt = T / nTimeSteps;
+  double stockPrice = 100; // Example assignment
+  double vol = 0.2;        // Example assignment
+  double rate = 0.03;      // Example assignment
+//   double stockPrice, vol, rate;
+  /*
+  get these data for the deal from market object
+  */
+  ModelSetup(stockPrice, vol, rate, dt);
+  
+  // initialize
+  for (int i = 0; i <= nTimeSteps; i++) {
+    states[i] = trade.Payoff( GetSpot(nTimeSteps, i) );
+  }    
+  
+  // price by backward induction
+  for (int k = nTimeSteps-1; k >= 0; k--)
+    for (int i = 0; i <= k; i++) {
+    // calculate continuation value
+      double df = exp(-rate *dt);	  
+      double continuation = df * (states[i]*GetProbUp() + states[i+1]*GetProbDown());
+      // calculate the option value at node(k, i)
+      states[i] = trade.ValueAtNode( GetSpot(k, i), dt*k, continuation);
+    }
+
+  return states[0];
+
 }
 
-std::tuple<double, double, double> tianCalib(double r, double vol, double t) {
-    double v = std::exp(vol * vol * t);
-    double u = 0.5 * std::exp(r * t) * v * (v + 1 + std::sqrt(v*v + 2*v - 3));
-    double d = 0.5 * std::exp(r * t) * v * (v + 1 - std::sqrt(v*v + 2*v - 3));
-    double p = (std::exp(r * t) - d) / (u - d);
-    return std::make_tuple(u, d, p);
-}
-
-// Black model pricer
-double blackPrice(double S, double r, double vol, double T, double strike, OptionType payoffType)
+void CRRBinomialTreePricer::ModelSetup(double S0, double sigma, double rate, double dt)
 {
-    double F = S * exp(r * T); // Forward price
-    double stdev = vol * sqrt(T);
-    double d1 = (log(F / strike) + 0.5 * stdev * stdev) / stdev;
-    double d2 = d1 - stdev;
-    if (payoffType == OptionType::Call)
-    {
-        return exp(-r * T) * (F * cnorm(d1) - strike * cnorm(d2));
-    }
-    else if (payoffType == OptionType::Put)
-    {
-        return exp(-r * T) * (strike * cnorm(-d2) - F * cnorm(-d1));
-    }
-    else if (payoffType == OptionType::BinaryCall)
-    {
-        return exp(-r * T) * cnorm(d2);
-    }
-    else if (payoffType == OptionType::BinaryPut)
-    {
-        return exp(-r * T) * cnorm(-d2);
-    }
-    else
-    {
-        throw std::invalid_argument("Unsupported payoffType");
-    }
+  double b = std::exp((2*rate+sigma*sigma)*dt)+1;
+  u = (b + std::sqrt(b*b - 4*std::exp(2*rate*dt))) / 2 / std::exp(rate*dt);
+  p = (std::exp(rate*dt) -  1/u) / (u - 1/u);
+  currentSpot = S0;
+}
+
+void JRRNBinomialTreePricer::ModelSetup(double S0, double sigma, double rate, double dt)
+{
+    u = std::exp( (rate - sigma*sigma/2) * dt + sigma * std::sqrt(dt) );
+    d = std::exp( (rate - sigma*sigma/2) * dt - sigma * std::sqrt(dt) );
+    p = (std::exp(rate*dt) -  d) / (u - d);
+    currentSpot = S0;
 }
 
