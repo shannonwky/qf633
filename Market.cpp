@@ -2,6 +2,31 @@
 
 using namespace std;
 
+double RateCurve::convertToYears(const std::string& timeStr) const {
+    if (timeStr.find("M") != std::string::npos) {
+        double months = std::stod(timeStr);
+        return months / 12.0;
+    } else if (timeStr.find("Y") != std::string::npos) {
+        return std::stod(timeStr);
+    }
+    return 0.0;
+}
+
+void RateCurve::addRate(const std::string& tenorStr, double rate) {
+    double tenor = convertToYears(tenorStr);
+    X.push_back(tenor);
+    Y.push_back(rate);
+}
+
+double RateCurve::getRate(const std::string& tenorStr) const {
+    double tenor = convertToYears(tenorStr);
+
+    tk::spline s(X, Y);
+    double interpolatedY = s(tenor);
+    //std::cout << "Interpolated value at x=" << tenor << " is " << interpolatedY << std::endl;
+
+    return interpolatedY;
+}
 
 // Implement the display function outside the class declaration
 void RateCurve::display() const {
@@ -11,11 +36,6 @@ void RateCurve::display() const {
     }
     std::cout << std::endl;
 }
-
-
-
-
-
 
 
 void VolCurve::display() const {

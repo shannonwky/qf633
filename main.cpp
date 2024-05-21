@@ -1,13 +1,17 @@
 #include <fstream>
 #include <ctime>
 #include <chrono>
+#include <iostream>
 
 // #include "Date.cpp"
 // #include "Market.cpp"
 // #include "Pricer.cpp"
 // #include "Swap.cpp"
 // #include "BlackModelPricer.cpp"
+// #include "Payoff.cpp"
 
+#include "Date.h"
+#include "Payoff.h"
 #include "Market.h"
 #include "Pricer.h"
 #include "BlackModelPricer.h"
@@ -18,85 +22,53 @@
 #include "Trade.h"
 #include "TreeProduct.h"
 #include "Types.h"
-#include "Payoff.h"
+
+
+
 
 
 using namespace std;
 
-void readFromFile(const string &fileName, string &outPut)
-{
-  string lineText;
-  ifstream MyReadFile(fileName);
-  // Skip the first line
-  if (getline(MyReadFile, lineText))
-  {
-    // Successfully read and skipped the first line
-  }
-  while (getline(MyReadFile, lineText))
-  {
-    outPut.append(lineText);
-  }
-  MyReadFile.close();
-}
+void readRatesFromFile(const string& fileName, vector<string>& tenors, vector<double>& rates, bool skipfirstline) {
+    ifstream inputFile(fileName);
 
-// Trim whitespace from the beginning and end of a string
-std::string trim(const std::string &str)
-{
-  size_t start = str.find_first_not_of(" \t\r\n");
-  size_t end = str.find_last_not_of(" \t\r\n");
-  if (start == std::string::npos)
-  {
-    return ""; // Empty string or whitespace only
-  }
-  return str.substr(start, end - start + 1);
-}
-
-void readRatesFromFile(const string &fileName, vector<string> &tenors, vector<double> &rates)
-{
-  ifstream inputFile(fileName);
-
-  if (!inputFile.is_open())
-  {
-    cerr << "Error: Could not open the file." << endl;
-    return;
-  }
-
-  string line;
-  // Skip the first line (header)
-  getline(inputFile, line);
-
-  while (getline(inputFile, line))
-  {
-    size_t colonPos = line.find(':');
-    size_t percentPos = line.find('%');
-
-    if (colonPos == string::npos || percentPos == string::npos)
-    {
-      cerr << "Error: Incorrect format in line: " << line << endl;
-      continue;
+    if (!inputFile.is_open()) {
+        cerr << "Error: Could not open the file." << endl;
+        return;
     }
 
-    try
-    {
-      string tenor = line.substr(0, colonPos); // Convert to string
-      // Convert "0" to string literal
-      if (tenor == "0")
-      {
-        tenor = "0"; // or tenor = "0" + tenor;
-      }
-      double rate = stod(line.substr(colonPos + 1, percentPos - colonPos - 1));
-
-      tenors.push_back(tenor);
-      rates.push_back(rate);
+    string line;
+    // Skip the first line (header)
+    if (skipfirstline == true){
+      getline(inputFile, line);
     }
-    catch (const exception &e)
-    {
-      cerr << "Exception occurred while parsing line: " << line << endl;
-      cerr << e.what() << endl;
-    }
-  }
 
-  inputFile.close();
+    while (getline(inputFile, line)) {
+        size_t colonPos = line.find(':');
+        size_t percentPos = line.find('%');
+
+        if (colonPos == string::npos || percentPos == string::npos) {
+            cerr << "Error: Incorrect format in line: " << line << endl;
+            continue;
+        }
+
+        try {
+            string tenor = line.substr(0, colonPos); // Convert to string
+            // Convert "0" to string literal
+            if (tenor == "0") {
+                tenor = "0"; // or tenor = "0" + tenor;
+            }
+            double rate = stod(line.substr(colonPos + 1, percentPos - colonPos - 1));
+            
+            tenors.push_back(tenor);
+            rates.push_back(rate);
+        } catch (const exception& e) {
+            cerr << "Exception occurred while parsing line: " << line << endl;
+            cerr << e.what() << endl;
+        }
+    }
+
+    inputFile.close();
 }
 
 int main()
@@ -113,12 +85,11 @@ int main()
 
   // Read rates and interpolate
   RateCurve curve;
-
   vector<string> tenors;
   vector<double> rates;
 
   // Assuming your file is named "curve.txt"
-  readRatesFromFile("curve.txt", tenors, rates);
+  readRatesFromFile("curve.txt", tenors, rates, true);
 
   // Display the contents of tenors and rates
   for (size_t i = 0; i < tenors.size(); ++i)
@@ -129,7 +100,10 @@ int main()
   curve.display();
 
   // Get rate for a specific tenor (example)
-  curve.getRate("4.3Y");
+  string tenor_check ="3.3Y";
+  double obtained_rate = curve.getRate(tenor_check);
+  std::cout << "Interpolated value at x=" << tenor_check << " is " << obtained_rate << std::endl;
+
 
   // task 2, create a portfolio of bond, swap, european option, american option
   // for each time, at least should have long / short, different tenor or expiry, different underlying
@@ -142,16 +116,36 @@ int main()
   myPortfolio.push_back(bond);
 
   // Swaps
+  
+  std::cout << "\nThis is the beginning of Swap section: " << std::endl;
+  // Define the start and end dates for the swap
+  Date startDate(2023, 1, 1);
+  Date endDate(2025, 1, 1);
 
-  // Example: Adding a dummy Swap trade to the portfolio
-  // Date startDate = Date(2023, 1, 1); // Example start date
-  // Date endDate = Date(2025, 1, 1);   // Example end date
-  // double notional = 100;
-  // double price = ????
-  // double tradeRate = 0.05;  // 5% trade rate
-  // double frequency = 1;     // Annual payments
-  // Swap* swapTrade = new Swap(startDate, endDate, notional, price, tradeRate, frequency);
-  // myPortfolio.push_back(swapTrade);
+  // Define the swap parameters
+  double notional = 1000000; // 1,000,000 units
+  double tradeRate = 0.05;   // 5% trade rate
+  double frequency = 1;      // Annual payments (1), semi-annual (2)...
+  double marketRate = 0.04; // 4%
+
+  // Create the Swap object
+  Swap mySwap(startDate, endDate, notional, tradeRate, marketRate, frequency);
+
+  //Calculate the payoff of the swap
+  double annuity = mySwap.getAnnuity(curve); // get annuity
+  double present_value = mySwap.Payoff(annuity); // get present value
+
+  //Output the results
+  std::cout << "End of Swap section\n" << std::endl;
+
+
+
+// myPortfolio.push_back(swapTrade);
+
+
+
+
+
 
   // task 3, create a pricer and price the portfolio, output the pricing result of each deal.
   //  Create a CRRBinomialTreePricer with 10 time steps
@@ -183,7 +177,7 @@ int main()
     Date expiry(2025, 5, 19);
     double strike = 105.0;
     int nTimeSteps = 2;
-
+    
 
     std::cout << "\nTask 4" << std::endl;
 
