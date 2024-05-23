@@ -1,6 +1,7 @@
 #include "FileUtils.h"
 #include <fstream>
 #include <iostream>
+#include <sstream>
 
 void readRatesFromFile(const std::string &fileName, std::vector<std::string> &tenors, std::vector<double> &rates, bool skipfirstline)
 {
@@ -48,6 +49,35 @@ void readRatesFromFile(const std::string &fileName, std::vector<std::string> &te
             std::cerr << "Exception occurred while parsing line: " << line << std::endl;
             std::cerr << e.what() << std::endl;
         }
+    }
+
+    inputFile.close();
+}
+
+void readStockPricesFromFile(const std::string &fileName, std::unordered_map<std::string, double> &stockPrices)
+{
+    std::ifstream inputFile(fileName);
+
+    if (!inputFile.is_open())
+    {
+        std::cerr << "Error: Could not open the file." << std::endl;
+        return;
+    }
+
+    std::string line;
+    while (std::getline(inputFile, line))
+    {
+        std::istringstream iss(line);
+        std::string stockName;
+        double price;
+
+        if (!(iss >> stockName >> price))
+        {
+            std::cerr << "Error: Incorrect format in line: " << line << std::endl;
+            continue;
+        }
+
+        stockPrices[stockName] = price;
     }
 
     inputFile.close();

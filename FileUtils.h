@@ -5,5 +5,6 @@
 #include <string>
 
 void readRatesFromFile(const std::string &fileName, std::vector<std::string> &tenors, std::vector<double> &rates, bool skipfirstline);
+void readStockPricesFromFile(const std::string &fileName, std::unordered_map<std::string, double> &stockPrices);
 
 #endif // FILE_UTILS_H
