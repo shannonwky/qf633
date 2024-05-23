@@ -45,8 +45,56 @@ void RateCurve::display() const
   std::cout << std::endl;
 }
 
+void VolCurve::addVol(Date tenor, double vol)
+{
+  tenors.push_back(tenor);
+  vols.push_back(vol);
+}
+
+double VolCurve::getVol(Date tenor) const
+{
+  if (tenors.empty())
+  {
+    throw std::runtime_error("No Vols available");
+  }
+
+  // If the requested tenor is before the first tenor or after the last, return the boundary values
+  if (tenor <= tenors.front())
+  {
+    return vols.front();
+  }
+  if (tenor >= tenors.back())
+  {
+    return vols.back();
+  }
+
+  // Find the two tenors surrounding the requested tenor
+  for (size_t i = 1; i < tenors.size(); ++i)
+  {
+    if (tenor < tenors[i])
+    {
+      double t1 = tenors[i - 1].toDays();
+      double t2 = tenors[i].toDays();
+      double v1 = vols[i - 1];
+      double v2 = vols[i];
+
+      // Linear interpolation
+      double interpolatedVol = v1 + (v2 - v1) * (tenor.toDays() - t1) / (t2 - t1);
+      return interpolatedVol;
+    }
+  }
+
+  // Default case, should not reach here
+  return vols.back();
+}
+
 void VolCurve::display() const
 {
+  std::cout << "Vol curve:" << std::endl;
+  for (size_t i = 0; i < tenors.size(); ++i)
+  {
+    std::cout << "Tenor: " << tenors[i].year << "-" << tenors[i].month << "-" << tenors[i].day << ", Volatility: " << vols[i] << "%" << std::endl;
+  }
 }
 
 void Market::Print() const
@@ -78,6 +126,11 @@ void Market::Print() const
 void Market::addCurve(const std::string &curveName, const RateCurve &curve)
 {
   curves.emplace(curveName, curve);
+}
+
+void Market::addVolCurve(const std::string &curveName, const VolCurve &curve)
+{
+  vols[curveName] = curve;
 }
 
 void Market::addBondPrice(const std::string &bondName, double price)

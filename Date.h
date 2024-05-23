@@ -5,31 +5,36 @@
 
 class Date
 {
- public:
+public:
   int year;
   int month;
   int day;
-  Date(int y, int m, int d) : year(y), month(m), day(d) {};
+  Date(int y, int m, int d) : year(y), month(m), day(d){};
   Date(){};
 
   // friend double operator-(const Date& d1, const Date& d2);
   // friend std::ostream& operator<<(std::ostream& os, const Date& d);
   // friend std::istream& operator>>(std::istream& is, const Date& d);
-  
-  bool operator<(const Date& other) const;
+  int toDays() const;
+  static Date toDate(int days);
 
-  //double GetYearFraction() const;
+  bool operator<=(const Date &other) const;
+  bool operator>=(const Date &other) const;
+  bool operator<(const Date &other) const;
+  bool operator>(const Date &other) const;
+
+  static Date fromString(const std::string &tenorStr);
+
+  // double GetYearFraction() const;
   Date addYears(double years) const;
-  
-  private:
+
+private:
   int daysInMonth(int month, int year) const;
   bool isLeapYear(int year) const;
-
-
 };
 
-double operator-(const Date& d1, const Date& d2);
-std::ostream& operator<<(std::ostream& os, const Date& date);
-std::istream& operator>>(std::istream& is, Date& date);
+double operator-(const Date &d1, const Date &d2);
+std::ostream &operator<<(std::ostream &os, const Date &date);
+std::istream &operator>>(std::istream &is, Date &date);
 
 #endif
