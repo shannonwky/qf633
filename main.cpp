@@ -63,7 +63,7 @@ int main()
   // std::cout << "Interpolated volatility for tenor " << tenorToCheck << " is " << vol << "%" << std::endl;
   // mkt.addVolCurve("USD-ATM", volCurve1);
 
-  // 1.3 bond
+  // 1.4 bond
   std::unordered_map<std::string, double> bondPrices;
   readBondPricesFromFile("bondPrices.txt", bondPrices);
   for (const auto &pair : bondPrices)
@@ -71,7 +71,7 @@ int main()
     mkt.addBondPrice(pair.first, pair.second);
   }
 
-  // 1.4 stock
+  // 1.5 stock
   std::unordered_map<std::string, double> stockPrices;
   readStockPricesFromFile("stockPrices.txt", stockPrices);
   for (const auto &pair : stockPrices)
@@ -80,6 +80,8 @@ int main()
   }
 
   mkt.Print();
+  std::cout << "\n\n"
+            << std::endl;
 
   // task 2, create a portfolio of bond, swap, european option, american option
   // for each time, at least should have long / short, different tenor or expiry, different underlying
@@ -88,33 +90,75 @@ int main()
   vector<Trade *> myPortfolio;
 
   // Bonds
-
-  Trade *bond = new Bond(Date(2024, 1, 1), Date(2034, 1, 1), 10000000, 103.5);
-  myPortfolio.push_back(bond);
+  // Adding bonds
+  Trade *bond1 = new Bond(Date(2024, 1, 1), Date(2034, 1, 1), 10000000, 103.5);
+  Trade *bond2 = new Bond(Date(2024, 1, 1), Date(2029, 1, 1), 5000000, 99.0);
+  Trade *bond3 = new Bond(Date(2024, 1, 1), Date(2030, 1, 1), 15000000, 101.0);
+  Trade *bond4 = new Bond(Date(2024, 1, 1), Date(2027, 1, 1), 7500000, 98.0);
+  myPortfolio.push_back(bond1);
+  myPortfolio.push_back(bond2);
+  myPortfolio.push_back(bond3);
+  myPortfolio.push_back(bond4);
 
   // Swaps
+  // Adding swaps
+  Trade *swap1 = new Swap(Date(2023, 1, 1), Date(2025, 1, 1), 1000000, 0.05, 0.04, 1);
+  Trade *swap2 = new Swap(Date(2023, 1, 1), Date(2026, 1, 1), 2000000, 0.04, 0.03, 2);
+  Trade *swap3 = new Swap(Date(2023, 1, 1), Date(2024, 1, 1), 3000000, 0.06, 0.05, 1);
+  Trade *swap4 = new Swap(Date(2023, 1, 1), Date(2027, 1, 1), 4000000, 0.03, 0.02, 2);
+  myPortfolio.push_back(swap1);
+  myPortfolio.push_back(swap2);
+  myPortfolio.push_back(swap3);
+  myPortfolio.push_back(swap4);
 
-  std::cout << "\nThis is the beginning of Swap section: " << std::endl;
-  // Define the start and end dates for the swap
-  Date startDate(2023, 1, 1);
-  Date endDate(2025, 1, 1);
+  // Adding European options
+  Trade *europeanCall1 = new EuropeanOption(Date(2025, 5, 19), 105.0, Call);
+  Trade *europeanPut1 = new EuropeanOption(Date(2026, 5, 19), 100.0, Put);
+  Trade *europeanCall2 = new EuropeanOption(Date(2025, 11, 19), 110.0, Call);
+  Trade *europeanPut2 = new EuropeanOption(Date(2026, 11, 19), 95.0, Put);
+  myPortfolio.push_back(europeanCall1);
+  myPortfolio.push_back(europeanPut1);
+  myPortfolio.push_back(europeanCall2);
+  myPortfolio.push_back(europeanPut2);
 
-  // Define the swap parameters
-  double notional = 1000000; // 1,000,000 units
-  double tradeRate = 0.05;   // 5% trade rate
-  double frequency = 1;      // Annual payments (1), semi-annual (2)...
-  double marketRate = 0.04;  // 4%
+  // Adding American options
+  Trade *americanCall1 = new AmericanOption(Date(2025, 5, 19), 110.0, Call);
+  Trade *americanPut1 = new AmericanOption(Date(2026, 5, 19), 95.0, Put);
+  Trade *americanCall2 = new AmericanOption(Date(2025, 11, 19), 115.0, Call);
+  Trade *americanPut2 = new AmericanOption(Date(2026, 11, 19), 90.0, Put);
+  myPortfolio.push_back(americanCall1);
+  myPortfolio.push_back(americanPut1);
+  myPortfolio.push_back(americanCall2);
+  myPortfolio.push_back(americanPut2);
 
-  // Create the Swap object
-  Swap mySwap(startDate, endDate, notional, tradeRate, marketRate, frequency);
+  // Printing the portfolio
+  std::cout << "Portfolio created with " << myPortfolio.size() << " trades.\n";
+  for (const auto &trade : myPortfolio)
+  {
+    trade->Print();
+  }
 
-  // Calculate the payoff of the swap
-  double annuity = mySwap.getAnnuity(curve);     // get annuity
-  double present_value = mySwap.Payoff(annuity); // get present value
+  // std::cout << "\nThis is the beginning of Swap section: " << std::endl;
+  // // Define the start and end dates for the swap
+  // Date startDate(2023, 1, 1);
+  // Date endDate(2025, 1, 1);
 
-  // Output the results
-  std::cout << "End of Swap section\n"
-            << std::endl;
+  // // Define the swap parameters
+  // double notional = 1000000; // 1,000,000 units
+  // double tradeRate = 0.05;   // 5% trade rate
+  // double frequency = 1;      // Annual payments (1), semi-annual (2)...
+  // double marketRate = 0.04;  // 4%
+
+  // // Create the Swap object
+  // Swap mySwap(startDate, endDate, notional, tradeRate, marketRate, frequency);
+
+  // // Calculate the payoff of the swap
+  // double annuity = mySwap.getAnnuity(curve);     // get annuity
+  // double present_value = mySwap.Payoff(annuity); // get present value
+
+  // // Output the results
+  // std::cout << "End of Swap section\n"
+  //           << std::endl;
 
   // myPortfolio.push_back(swapTrade);
 

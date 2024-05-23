@@ -14,6 +14,7 @@ public:
     { 
     return expiryDate; //tft: maybe it's expiry instead? kiv
     }
+    virtual void Print() const = 0;
     //virtual Date GetExpiry() const = 0; //Added new
     virtual ~Trade(){};
     

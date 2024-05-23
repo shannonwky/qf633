@@ -42,7 +42,6 @@ void RateCurve::display() const
   {
     std::cout << X[i] << ":" << Y[i] << std::endl;
   }
-  std::cout << std::endl;
 }
 
 void VolCurve::addVol(Date tenor, double vol)
@@ -109,18 +108,16 @@ void Market::Print() const
   {
     vol.second.display();
   }
+  std::cout << "bond:" << std::endl;
   for (const auto &pair : bondPrices)
   {
     std::cout << "Bond: " << pair.first << ", Price: " << pair.second << endl;
   }
+  std::cout << "stock:" << std::endl;
   for (const auto &pair : stockPrices)
   {
     std::cout << "Stock: " << pair.first << ", Price: " << pair.second << endl;
   }
-  /*
-  add display for bond price and stock price
-
-  */
 }
 
 void Market::addCurve(const std::string &curveName, const RateCurve &curve)
