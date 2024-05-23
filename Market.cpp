@@ -61,6 +61,10 @@ void Market::Print() const
   {
     vol.second.display();
   }
+  for (const auto &pair : bondPrices)
+  {
+    std::cout << "Bond: " << pair.first << ", Price: " << pair.second << endl;
+  }
   for (const auto &pair : stockPrices)
   {
     std::cout << "Stock: " << pair.first << ", Price: " << pair.second << endl;
@@ -74,6 +78,11 @@ void Market::Print() const
 void Market::addCurve(const std::string &curveName, const RateCurve &curve)
 {
   curves.emplace(curveName, curve);
+}
+
+void Market::addBondPrice(const std::string &bondName, double price)
+{
+  bondPrices[bondName] = price;
 }
 
 void Market::addStockPrice(const std::string &stockName, double price)

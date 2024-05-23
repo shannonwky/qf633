@@ -98,7 +98,14 @@ int main()
   }
 
   mkt.addCurve("USD-SOFR", curve);
-  
+
+  std::unordered_map<std::string, double> bondPrices;
+  readStockPricesFromFile("bondPrices.txt", bondPrices);
+  for (const auto &pair : bondPrices)
+  {
+    mkt.addBondPrice(pair.first, pair.second);
+  }
+
   std::unordered_map<std::string, double> stockPrices;
   readStockPricesFromFile("stockPrices.txt", stockPrices);
   for (const auto &pair : stockPrices)

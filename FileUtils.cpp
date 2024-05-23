@@ -82,3 +82,32 @@ void readStockPricesFromFile(const std::string &fileName, std::unordered_map<std
 
     inputFile.close();
 }
+
+void readBondPricesFromFile(const std::string &fileName, std::unordered_map<std::string, double> &bondPrices)
+{
+    std::ifstream ifs(fileName);
+
+    if (!ifs.is_open())
+    {
+        std::cerr << "Error: Could not open the file." << std::endl;
+        return;
+    }
+
+    std::string line;
+    while (std::getline(ifs, line))
+    {
+        std::istringstream iss(line);
+        std::string bondName;
+        double price;
+
+        if (!(iss >> bondName >> price))
+        {
+            std::cerr << "Error: Incorrect format in line: " << line << std::endl;
+            continue;
+        }
+
+        bondPrices[bondName] = price;
+    }
+
+    ifs.close();
+}
