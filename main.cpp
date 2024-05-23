@@ -3,13 +3,6 @@
 #include <chrono>
 #include <iostream>
 
-// #include "Date.cpp"
-// #include "Market.cpp"
-// #include "Pricer.cpp"
-// #include "Swap.cpp"
-// #include "BlackModelPricer.cpp"
-// #include "Payoff.cpp"
-
 #include "Date.h"
 #include "Payoff.h"
 #include "Market.h"
@@ -22,58 +15,65 @@
 #include "Trade.h"
 #include "TreeProduct.h"
 #include "Types.h"
-
-
-
-
+#include "FileUtils.h"
 
 using namespace std;
 
-void readRatesFromFile(const string& fileName, vector<string>& tenors, vector<double>& rates, bool skipfirstline) {
-    ifstream inputFile(fileName);
+// void readRatesFromFile(const string &fileName, vector<string> &tenors, vector<double> &rates, bool skipfirstline)
+// {
+//   ifstream inputFile(fileName);
 
-    if (!inputFile.is_open()) {
-        cerr << "Error: Could not open the file." << endl;
-        return;
-    }
+//   if (!inputFile.is_open())
+//   {
+//     cerr << "Error: Could not open the file." << endl;
+//     return;
+//   }
 
-    string line;
-    // Skip the first line (header)
-    if (skipfirstline == true){
-      getline(inputFile, line);
-    }
+//   string line;
+//   // Skip the first line (header)
+//   if (skipfirstline == true)
+//   {
+//     getline(inputFile, line);
+//   }
 
-    while (getline(inputFile, line)) {
-        size_t colonPos = line.find(':');
-        size_t percentPos = line.find('%');
+//   while (getline(inputFile, line))
+//   {
+//     size_t colonPos = line.find(':');
+//     size_t percentPos = line.find('%');
 
-        if (colonPos == string::npos || percentPos == string::npos) {
-            cerr << "Error: Incorrect format in line: " << line << endl;
-            continue;
-        }
+//     if (colonPos == string::npos || percentPos == string::npos)
+//     {
+//       cerr << "Error: Incorrect format in line: " << line << endl;
+//       continue;
+//     }
 
-        try {
-            string tenor = line.substr(0, colonPos); // Convert to string
-            // Convert "0" to string literal
-            if (tenor == "0") {
-                tenor = "0"; // or tenor = "0" + tenor;
-            }
-            double rate = stod(line.substr(colonPos + 1, percentPos - colonPos - 1));
-            
-            tenors.push_back(tenor);
-            rates.push_back(rate);
-        } catch (const exception& e) {
-            cerr << "Exception occurred while parsing line: " << line << endl;
-            cerr << e.what() << endl;
-        }
-    }
+//     try
+//     {
+//       string tenor = line.substr(0, colonPos); // Convert to string
+//       // Convert "0" to string literal
+//       if (tenor == "0")
+//       {
+//         tenor = "0"; // or tenor = "0" + tenor;
+//       }
+//       double rate = stod(line.substr(colonPos + 1, percentPos - colonPos - 1));
 
-    inputFile.close();
-}
+//       tenors.push_back(tenor);
+//       rates.push_back(rate);
+//     }
+//     catch (const exception &e)
+//     {
+//       cerr << "Exception occurred while parsing line: " << line << endl;
+//       cerr << e.what() << endl;
+//     }
+//   }
+
+//   inputFile.close();
+// }
 
 int main()
 {
   // task 1, create an market data object, and update the market data from from txt file
+  std::cout << "task1:\n";
   std::time_t t = std::time(0);
   auto now_ = std::localtime(&t);
   Date valueDate;
@@ -97,17 +97,20 @@ int main()
     curve.addRate(tenors[i], rates[i]);
   }
 
-  curve.display();
+  mkt.addCurve("USD-SOFR", curve);
+  mkt.Print();
+
+  // curve.display();
 
   // Get rate for a specific tenor (example)
-  string tenor_check ="3.3Y";
+  string tenor_check = "3.3Y";
   double obtained_rate = curve.getRate(tenor_check);
   std::cout << "Interpolated value at x=" << tenor_check << " is " << obtained_rate << std::endl;
-
 
   // task 2, create a portfolio of bond, swap, european option, american option
   // for each time, at least should have long / short, different tenor or expiry, different underlying
   // totally no less than 16 trades
+  std::cout << "task2:\n";
   vector<Trade *> myPortfolio;
 
   // Bonds
@@ -116,7 +119,7 @@ int main()
   myPortfolio.push_back(bond);
 
   // Swaps
-  
+
   std::cout << "\nThis is the beginning of Swap section: " << std::endl;
   // Define the start and end dates for the swap
   Date startDate(2023, 1, 1);
@@ -126,26 +129,20 @@ int main()
   double notional = 1000000; // 1,000,000 units
   double tradeRate = 0.05;   // 5% trade rate
   double frequency = 1;      // Annual payments (1), semi-annual (2)...
-  double marketRate = 0.04; // 4%
+  double marketRate = 0.04;  // 4%
 
   // Create the Swap object
   Swap mySwap(startDate, endDate, notional, tradeRate, marketRate, frequency);
 
-  //Calculate the payoff of the swap
-  double annuity = mySwap.getAnnuity(curve); // get annuity
+  // Calculate the payoff of the swap
+  double annuity = mySwap.getAnnuity(curve);     // get annuity
   double present_value = mySwap.Payoff(annuity); // get present value
 
-  //Output the results
-  std::cout << "End of Swap section\n" << std::endl;
+  // Output the results
+  std::cout << "End of Swap section\n"
+            << std::endl;
 
-
-
-// myPortfolio.push_back(swapTrade);
-
-
-
-
-
+  // myPortfolio.push_back(swapTrade);
 
   // task 3, create a pricer and price the portfolio, output the pricing result of each deal.
   //  Create a CRRBinomialTreePricer with 10 time steps
@@ -170,40 +167,38 @@ int main()
   //  a) compare CRR binomial tree result for an european option vs Black model
   //  b) compare CRR binomial tree result for an american option vs european option
 
-  //Setup Market Data
-    Date asOf(2024, 5, 19);
-    Market market(asOf);
+  // Setup Market Data
+  Date asOf(2024, 5, 19);
+  Market market(asOf);
 
-    Date expiry(2025, 5, 19);
-    double strike = 105.0;
-    int nTimeSteps = 2;
-    
+  Date expiry(2025, 5, 19);
+  double strike = 105.0;
+  int nTimeSteps = 2;
 
-    std::cout << "\nTask 4" << std::endl;
+  std::cout << "\nTask 4" << std::endl;
 
-    // European fully working
-    OptionType optType = Call; 
-    EuropeanOption europeanOption(expiry, strike, optType);
-    CRRBinomialTreePricer crrPricer(nTimeSteps);
-    double crrPrice = crrPricer.PriceTree(market, europeanOption);
-    cout << "CRR Binomial Tree Price for European Call: " << crrPrice << endl;   
-    ////End of European 
+  // European fully working
+  OptionType optType = Call;
+  EuropeanOption europeanOption(expiry, strike, optType);
+  CRRBinomialTreePricer crrPricer(nTimeSteps);
+  double crrPrice = crrPricer.PriceTree(market, europeanOption);
+  cout << "CRR Binomial Tree Price for European Call: " << crrPrice << endl;
+  ////End of European
 
-    //American fully working
-    OptionType optType2 = Put; 
-    AmericanOption americanOption(expiry, strike, optType2);
-    CRRBinomialTreePricer crrPricer2(nTimeSteps);
-    double crrPrice2 = crrPricer2.PriceTree(market, americanOption);
-    cout << "CRR Binomial Tree Price for American Put: " << crrPrice2 << endl;  
-    ////End of American
+  // American fully working
+  OptionType optType2 = Put;
+  AmericanOption americanOption(expiry, strike, optType2);
+  CRRBinomialTreePricer crrPricer2(nTimeSteps);
+  double crrPrice2 = crrPricer2.PriceTree(market, americanOption);
+  cout << "CRR Binomial Tree Price for American Put: " << crrPrice2 << endl;
+  ////End of American
 
-    //Black Model fully working
-    // Change of parameters in Pricer.cpp
-    EuropeanOption option(expiry, 105, Put);
-    BlackPricer pricer;
-    double price = pricer.Price(market, &option);
-    std::cout << "Black Model Option price: " << price << std::endl;
-
+  // Black Model fully working
+  //  Change of parameters in Pricer.cpp
+  EuropeanOption option(expiry, 105, Put);
+  BlackPricer pricer;
+  double price = pricer.Price(market, &option);
+  std::cout << "Black Model Option price: " << price << std::endl;
 
   // final
   cout << "\nProject build successfully!" << endl;
