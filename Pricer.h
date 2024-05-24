@@ -36,7 +36,7 @@ public:
     nTimeSteps = N;
     states.resize(N+1);
   }
-  double PriceTree(const Market& mkt, const TreeProduct& trade) override;
+  double PriceTree(const Market& mkt, const TreeProduct& trade, double stockPrice, double vol, double rate);
   
 protected:
   virtual void ModelSetup(double S0, double sigma, double rate, double dt) = 0; // pure virtual

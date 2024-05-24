@@ -3,7 +3,7 @@
 double Swap::Payoff(double annuity) const
 {
     double payoff = annuity * (tradeRate - marketRate);
-    std::cout << "Payout: " << payoff << std::endl;
+    //std::cout << "Payout: " << payoff << std::endl;
 
     return payoff;
 }
@@ -28,7 +28,7 @@ double Swap::getAnnuity(const RateCurve &curve) const
         //           << " Discount Factor: " << discountFactor
         //           << " Annuity: " << annuity << std::endl;
     }
-
+    //cout << "Calculation is : " << annuity << endl;
     return annuity;
 }
 
