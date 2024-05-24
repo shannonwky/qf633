@@ -34,14 +34,15 @@ double BlackPricer::Price(const Market& mkt, Trade* trade) {
 
 
 //Binomial Tree Model
-double BinomialTreePricer::PriceTree(const Market& mkt, const TreeProduct& trade) {
+//double BinomialTreePricer::PriceTree(const Market& mkt, const TreeProduct& trade) {
+double BinomialTreePricer::PriceTree(const Market& mkt, const TreeProduct& trade, double stockPrice, double vol, double rate) {
   // model setup
   double T = trade.GetExpiry() - mkt.asOf;
   double dt = T / nTimeSteps;
-  double stockPrice = 100; // Example assignment
-  double vol = 0.2;        // Example assignment
-  double rate = 0.03;      // Example assignment
-//   double stockPrice, vol, rate;
+  // double stockPrice = 100; // Example assignment
+  // double vol = 0.2;        // Example assignment
+  // double rate = 0.03;      // Example assignment
+  //double stockPrice, vol, rate;
   /*
   get these data for the deal from market object
   */

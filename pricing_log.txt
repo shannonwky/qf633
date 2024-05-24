@@ -1,2 +1,32 @@
 Trade with expiry: 0 0 0
  has PV: 1.035e+09
+Trade with expiry: 0 0 0
+ has PV: 4.95e+08
+Trade with expiry: 0 0 0
+ has PV: 1.515e+09
+Trade with expiry: 0 0 0
+ has PV: 7.35e+08
+Trade with expiry: 0 0 0
+ has PV: 3.04933e-316
+Trade with expiry: 0 0 0
+ has PV: 3.04933e-316
+Trade with expiry: 0 0 0
+ has PV: 3.04933e-316
+Trade with expiry: 0 0 0
+ has PV: 3.04933e-316
+Trade with expiry: 2025 5 19
+ has PV: 100
+Trade with expiry: 2026 5 19
+ has PV: 8.2337e-25
+Trade with expiry: 2025 11 19
+ has PV: 100
+Trade with expiry: 2026 11 19
+ has PV: 7.70556e-25
+Trade with expiry: 2025 5 19
+ has PV: 100
+Trade with expiry: 2026 5 19
+ has PV: 0.233958
+Trade with expiry: 2025 11 19
+ has PV: 100
+Trade with expiry: 2026 11 19
+ has PV: 0.221313

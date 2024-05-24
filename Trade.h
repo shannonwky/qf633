@@ -15,6 +15,13 @@ public:
     return expiryDate; //tft: maybe it's expiry instead? kiv
     }
     virtual void Print() const = 0;
+    // virtual void Print() const {
+    //     cout << "Trade Type: " << tradeType << endl;
+    //     cout << "Trade Date: " << tradeDate << endl;
+    //     cout << "Expiry Date: " << expiryDate << endl;
+    // }
+
+
     //virtual Date GetExpiry() const = 0; //Added new
     virtual ~Trade(){};
     
