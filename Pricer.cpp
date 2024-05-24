@@ -20,16 +20,22 @@ double Pricer::Price(const Market& mkt, Trade* trade) {
 }
 
 //Black Model
-double BlackPricer::Price(const Market& mkt, Trade* trade) {
-    BlackModelPricer pricer;
-    double S = 100; // Example spot price, get actual data from Market
-    double r = 0.05; // Example risk-free rate, get actual data from Market
-    double vol = 0.2; // Example volatility, get actual data from Market
+//double BlackPricer::Price(const Market& mkt, Trade* trade) {
+double BlackPricer::Price(const Market& mkt, Trade* trade, double S, double r, double vol, double strike, OptionType optType) {
+//double BlackPricer::Price(const Market& mkt, Trade* trade, double S, double r, double vol, OptionType optType) {
+    BlackModelPricer blackModelPricer;
+    //double S = 100; // Example spot price, get actual data from Market
+    //double r = 0.05; // Example risk-free rate, get actual data from Market
+    //double vol = 0.2; // Example volatility, get actual data from Market
     double T = trade->GetExpiry() - mkt.asOf; // Time to maturity
-    double strike = 105; // Example strike, get actual data from Trade
+    //double strike = trade->getStrike();
+    //OptionType optType = trade ->getType();
 
-    OptionType optType = BinaryPut; // Example option type, get actual data from Trade
-    return pricer.Price(S, r, vol, T, strike, optType);
+    //double strike = 105; // Example strike, get actual data from Trade
+    //OptionType optType = BinaryPut; // Example option type, get actual data from Trade
+
+    //return Price(S, r, vol, T, strike, optType);
+    return blackModelPricer.Price(S, r, vol, T, strike, optType);
 }
 
 

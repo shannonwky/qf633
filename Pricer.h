@@ -24,7 +24,8 @@ private:
 //Black Model
 class BlackPricer : public Pricer {
 public:
-    double Price(const Market& mkt, Trade* trade) override;
+   //double Price(const Market& mkt, Trade* trade) override;
+    double Price(const Market& mkt, Trade* trade, double S, double r, double vol, double strike, OptionType optType);
 };
 
 

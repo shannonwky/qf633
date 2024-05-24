@@ -23,7 +23,7 @@ int main()
 {
   // task 1, create an market data object, and update the market data from from txt file
   // 1.1 date
-  std::cout << "\nTask1:\n";
+  std::cout << "\nTask1:\n\n";
   std::time_t t = std::time(0);
   auto now_ = std::localtime(&t);
   Date valueDate;
@@ -83,13 +83,13 @@ int main()
   }
 
   mkt.Print();
-  std::cout << "End of Task 1\n\n"
+  std::cout << "\nEnd of Task 1\n\n"
             << std::endl;
 
   // task 2, create a portfolio of bond, swap, european option, american option
   // for each time, at least should have long / short, different tenor or expiry, different underlying
   // totally no less than 16 trades
-  std::cout << "Task2:\n";
+  std::cout << "Task 2:\n\n";
   vector<Trade *> myPortfolio;
 
   // Bonds
@@ -140,12 +140,12 @@ int main()
   {
     trade->Print();
   }
-std::cout << "End of Task2:\n\n";
+std::cout << "\nEnd of Task 2\n\n";
 
 
 // task 3, create a pricer and price the portfolio, output the pricing result of each deal.
 
-std::cout << "Task3:\n";
+std::cout << "\nTask 3:\n\n";
 // Calculate prices for each trade
 double nTimeSteps = 10;
 double stockPrice = 100; // Get stock price from market object
@@ -180,34 +180,8 @@ for (const auto &trade : myPortfolio) {
     }
 
 }
-std::cout << "End of Task3:\n\n";
+std::cout << "\nEnd of Task 3\n\n";
 
-
-
-
-  // std::cout << "\nThis is the beginning of Swap section: " << std::endl;
-  // // Define the start and end dates for the swap
-  // Date startDate(2023, 1, 1);
-  // Date endDate(2025, 1, 1);
-
-  // // Define the swap parameters
-  // double notional = 1000000; // 1,000,000 units
-  // double tradeRate = 0.05;   // 5% trade rate
-  // double frequency = 1;      // Annual payments (1), semi-annual (2)...
-  // double marketRate = 0.04;  // 4%
-
-  // // Create the Swap object
-  // Swap mySwap(startDate, endDate, notional, tradeRate, marketRate, frequency);
-
-  // // // Calculate the payoff of the swap
-  // double annuity = mySwap.getAnnuity(curve);     // get annuity
-  // double present_value = mySwap.Payoff(annuity); // get present value
-
-  // // Output the results
-  // std::cout << "End of Swap section\n"
-  //           << std::endl;
-
-  // myPortfolio.push_back(swapTrade);
 
   // task 3, create a pricer and price the portfolio, output the pricing result of each deal.
   //  Create a CRRBinomialTreePricer with 10 time steps
@@ -228,48 +202,110 @@ std::cout << "End of Task3:\n\n";
     //     delete trade;
     // }
 
+
   // task 4, analyzing pricing result
   //  a) compare CRR binomial tree result for an european option vs Black model
   //  b) compare CRR binomial tree result for an american option vs european option
 
-  // // Setup Market Data
-  // Date asOf(2024, 5, 19);
-  // Market market(asOf);
+std::cout << "\nTask 4" << std::endl;
 
-  // Date expiry(2025, 5, 19);
-  // double strike = 105.0;
-  // int nTimeSteps = 2;
-  // // model setup
-  // double T = trade.GetExpiry() - mkt.asOf;
-  // double dt = T / nTimeSteps;
-  // double stockPrice = 100; // Example assignment
-  // double vol = 0.2;        // Example assignment
-  // double rate = 0.03;      // Example assignment
 
-  // std::cout << "\nTask 4" << std::endl;
+std::cout << "\nTask 4a: Compare CRR binomial tree result for an European option vs Black model" << std::endl;
+vector<Trade *> myPortfolio3;
 
-  // // European fully working
-  // OptionType optType = Call;
-  // EuropeanOption europeanOption(expiry, strike, optType);
-  // CRRBinomialTreePricer crrPricer(nTimeSteps);
-  // double crrPrice = crrPricer.PriceTree(market, europeanOption);
-  // cout << "CRR Binomial Tree Price for European Call: " << crrPrice << endl;
-  // ////End of European
+vector<double> europeanPrices1;
+vector<double> BlackModelPrices;
+BlackPricer blackPricer;
 
-  // // American fully working
-  // OptionType optType2 = Put;
-  // AmericanOption americanOption(expiry, strike, optType2);
-  // CRRBinomialTreePricer crrPricer2(nTimeSteps);
-  // double crrPrice2 = crrPricer2.PriceTree(market, americanOption);
-  // cout << "CRR Binomial Tree Price for American Put: " << crrPrice2 << endl;
-  // ////End of American
+  // Adding European options
+  Trade *europeanCall31 = new EuropeanOption(Date(2025, 5, 19), 105.0, Call);
+  Trade *europeanPut31 = new EuropeanOption(Date(2026, 6, 20), 100.0, Put);
+  Trade *europeanCall41 = new EuropeanOption(Date(2027, 7, 21), 110.0, BinaryCall);
+  Trade *europeanPut41 = new EuropeanOption(Date(2028, 8, 22), 95.0, BinaryPut);
+  myPortfolio3.push_back(europeanCall31);
+  myPortfolio3.push_back(europeanPut31);
+  myPortfolio3.push_back(europeanCall41);
+  myPortfolio3.push_back(europeanPut41);
 
-  // // Black Model fully working
-  // //  Change of parameters in Pricer.cpp
-  // EuropeanOption option(expiry, 105, Put);
-  // BlackPricer pricer;
-  // double price = pricer.Price(market, &option);
-  // std::cout << "Black Model Option price: " << price << std::endl;
+
+for (const auto &trade : myPortfolio3) {
+    if (EuropeanOption* europeanOption = dynamic_cast<EuropeanOption*>(trade)) {
+        OptionType optType = europeanOption->getPayoffType();
+        Date expiry = europeanOption->GetExpiry();
+        double strike = europeanOption->getStrike();
+        //cout << "Payoff: " << optType << "Expiry: " << expiry << " vs " << "Strike: " << strike << endl;
+
+        // // Pricing logic for European option
+        CRRBinomialTreePricer crrPricer1(nTimeSteps);
+        double europeanPrice = crrPricer1.PriceTree(mkt, *europeanOption, stockPrice, vol, rate);
+        EuropeanOption option(expiry, strike, optType);
+        double Blackprice = blackPricer.Price(mkt, &option, stockPrice, rate, vol, strike, optType);
+        europeanPrices1.push_back(europeanPrice); // Store European option price
+        BlackModelPrices.push_back(Blackprice); // Store European option price
+
+
+    }
+}
+
+// Print comparison
+for (size_t i = 0; i < europeanPrices1.size(); ++i) {
+    cout << "CRR Binomial Tree Price for European Option: " << europeanPrices1[i] << " vs ";
+    cout << "Black Model: " << BlackModelPrices[i] << endl;
+}
+
+
+std::cout << "\nTask 4b: Comparison CRR binomial tree result for an European option vs American option " << std::endl;
+
+vector<Trade *> myPortfolio2;
+
+  // Adding European options
+  Trade *europeanCall3 = new EuropeanOption(Date(2025, 5, 19), 105.0, Call);
+  Trade *europeanPut3 = new EuropeanOption(Date(2026, 6, 20), 100.0, Put);
+  Trade *europeanCall4 = new EuropeanOption(Date(2027, 7, 21), 110.0, BinaryCall);
+  Trade *europeanPut4 = new EuropeanOption(Date(2028, 8, 22), 95.0, BinaryPut);
+  myPortfolio2.push_back(europeanCall3);
+  myPortfolio2.push_back(europeanPut3);
+  myPortfolio2.push_back(europeanCall4);
+  myPortfolio2.push_back(europeanPut4);
+
+  // Adding American options
+  Trade *americanCall3 = new AmericanOption(Date(2025, 5, 19), 105.0, Call);
+  Trade *americanPut3 = new AmericanOption(Date(2026, 6, 20), 100.0, Put);
+  Trade *americanCall4 = new AmericanOption(Date(2027, 7, 21), 110.0, BinaryCall);
+  Trade *americanPut4 = new AmericanOption(Date(2028, 8, 22), 95.0, BinaryPut);
+  myPortfolio2.push_back(americanCall3);
+  myPortfolio2.push_back(americanPut3);
+  myPortfolio2.push_back(americanCall4);
+  myPortfolio2.push_back(americanPut4);
+
+
+vector<double> europeanPrices;
+vector<double> americanPrices;
+
+for (const auto &trade : myPortfolio2) {
+    if (EuropeanOption* europeanOption = dynamic_cast<EuropeanOption*>(trade)) {
+        OptionType optType = europeanOption->getPayoffType();
+        // Pricing logic for European option
+        CRRBinomialTreePricer crrPricer1(nTimeSteps);
+        double europeanPrice = crrPricer1.PriceTree(mkt, *europeanOption, stockPrice, vol, rate);
+        europeanPrices.push_back(europeanPrice); // Store European option price
+    } else if (AmericanOption* americanOption = dynamic_cast<AmericanOption*>(trade)) {
+        OptionType optType = americanOption->getPayoffType();
+        // Pricing logic for American option
+        CRRBinomialTreePricer crrPricer(nTimeSteps);
+        double americanPrice = crrPricer.PriceTree(mkt, *americanOption, stockPrice, vol, rate);
+        americanPrices.push_back(americanPrice); // Store American option price
+    }
+}
+
+// Print comparison
+for (size_t i = 0; i < europeanPrices.size(); ++i) {
+    cout << "CRR Binomial Tree Price for European Option: " << europeanPrices[i] << " vs ";
+    cout << "CRR Binomial Tree Price for American Option: " << americanPrices[i] << endl;
+}
+
+cout << "\nEnd of Task 4\n\n" << endl;
+
 
   // final
   cout << "\nProject build successfully!" << endl;
