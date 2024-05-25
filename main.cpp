@@ -17,6 +17,12 @@
 #include "Types.h"
 #include "FileUtils.h"
 
+/*
+for above, there is no need to put all header file here right? 
+only need to put ones you need, e.g., market.h contains date.h and spline.h, 
+so need to be incldued here again
+*/
+
 using namespace std;
 
 int main()

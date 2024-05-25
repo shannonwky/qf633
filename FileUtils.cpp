@@ -3,6 +3,12 @@
 #include <iostream>
 #include <sstream>
 
+
+/*
+
+a better code standard is to have one function working with .txt file, and be able to load any data
+into simiar type of container.
+*/
 void readRatesFromFile(const std::string &fileName, std::vector<std::string> &tenors, std::vector<double> &rates, bool skipfirstline)
 {
     std::ifstream inputFile(fileName);
