@@ -147,7 +147,9 @@ int main()
     trade->Print();
   }
 std::cout << "\nEnd of Task 2\n\n";
-
+/*
+when you use new, should use delete.
+*/
 
 // task 3, create a pricer and price the portfolio, output the pricing result of each deal.
 
