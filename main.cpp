@@ -3,18 +3,11 @@
 #include <chrono>
 #include <iostream>
 
-#include "Date.h"
-#include "Payoff.h"
-#include "Market.h"
-#include "Pricer.h"
-#include "BlackModelPricer.h"
+
 #include "EuropeanTrade.h"
 #include "AmericanTrade.h"
 #include "Bond.h"
 #include "Swap.h"
-#include "Trade.h"
-#include "TreeProduct.h"
-#include "Types.h"
 #include "FileUtils.h"
 
 /*
@@ -146,6 +139,7 @@ int main()
   {
     trade->Print();
   }
+
 std::cout << "\nEnd of Task 2\n\n";
 /*
 when you use new, should use delete.
@@ -188,35 +182,20 @@ for (const auto &trade : myPortfolio) {
     }
 
 }
+
+// Cleanup: Deleting the trades
+for (const auto &trade : myPortfolio) {
+    delete trade;
+}
+myPortfolio.clear(); // Not necessary but good practice to clear the vector
 std::cout << "\nEnd of Task 3\n\n";
 
 
-  // task 3, create a pricer and price the portfolio, output the pricing result of each deal.
-  //  Create a CRRBinomialTreePricer with 10 time steps
-    // Pricer* treePricer = new CRRBinomialTreePricer(10);
-    // std::ofstream logFile("pricing_log.txt");
-
-    // // Iterate through the portfolio and price each trade
-    // for (auto trade : myPortfolio) {
-    //     double pv = treePricer->Price(mkt, trade);
-    //     logFile << "Trade with expiry: " << trade->GetExpiry() << " has PV: " << pv << std::endl;
-    // }
-
-    // logFile.close();
-
-    // // Clean up
-    // delete treePricer;
-    // for (auto trade : myPortfolio) {
-    //     delete trade;
-    // }
-
-
-  // task 4, analyzing pricing result
-  //  a) compare CRR binomial tree result for an european option vs Black model
-  //  b) compare CRR binomial tree result for an american option vs european option
+// task 4, analyzing pricing result
+//  a) compare CRR binomial tree result for an european option vs Black model
+//  b) compare CRR binomial tree result for an american option vs european option
 
 std::cout << "\nTask 4" << std::endl;
-
 
 std::cout << "\nTask 4a: Compare CRR binomial tree result for an European option vs Black model" << std::endl;
 vector<Trade *> myPortfolio3;
@@ -225,15 +204,15 @@ vector<double> europeanPrices1;
 vector<double> BlackModelPrices;
 BlackPricer blackPricer;
 
-  // Adding European options
-  Trade *europeanCall31 = new EuropeanOption(Date(2025, 5, 19), 105.0, Call);
-  Trade *europeanPut31 = new EuropeanOption(Date(2026, 6, 20), 100.0, Put);
-  Trade *europeanCall41 = new EuropeanOption(Date(2027, 7, 21), 110.0, BinaryCall);
-  Trade *europeanPut41 = new EuropeanOption(Date(2028, 8, 22), 95.0, BinaryPut);
-  myPortfolio3.push_back(europeanCall31);
-  myPortfolio3.push_back(europeanPut31);
-  myPortfolio3.push_back(europeanCall41);
-  myPortfolio3.push_back(europeanPut41);
+// Adding European options
+Trade *europeanCall31 = new EuropeanOption(Date(2025, 5, 19), 105.0, Call);
+Trade *europeanPut31 = new EuropeanOption(Date(2026, 6, 20), 100.0, Put);
+Trade *europeanCall41 = new EuropeanOption(Date(2027, 7, 21), 110.0, BinaryCall);
+Trade *europeanPut41 = new EuropeanOption(Date(2028, 8, 22), 95.0, BinaryPut);
+myPortfolio3.push_back(europeanCall31);
+myPortfolio3.push_back(europeanPut31);
+myPortfolio3.push_back(europeanCall41);
+myPortfolio3.push_back(europeanPut41);
 
 
 for (const auto &trade : myPortfolio3) {
@@ -261,34 +240,39 @@ for (size_t i = 0; i < europeanPrices1.size(); ++i) {
     cout << "Black Model: " << BlackModelPrices[i] << endl;
 }
 
+// Cleanup: Deleting the trades
+for (const auto &trade : myPortfolio3) {
+    delete trade;
+}
+myPortfolio3.clear(); // Not necessary but good practice to clear the vector
 
-std::cout << "\nTask 4b: Comparison CRR binomial tree result for an European option vs American option " << std::endl;
+
+
+std::cout << "\nTask 4b: Compare CRR binomial tree result for an European option vs American option " << std::endl;
 
 vector<Trade *> myPortfolio2;
-
-  // Adding European options
-  Trade *europeanCall3 = new EuropeanOption(Date(2025, 5, 19), 105.0, Call);
-  Trade *europeanPut3 = new EuropeanOption(Date(2026, 6, 20), 100.0, Put);
-  Trade *europeanCall4 = new EuropeanOption(Date(2027, 7, 21), 110.0, BinaryCall);
-  Trade *europeanPut4 = new EuropeanOption(Date(2028, 8, 22), 95.0, BinaryPut);
-  myPortfolio2.push_back(europeanCall3);
-  myPortfolio2.push_back(europeanPut3);
-  myPortfolio2.push_back(europeanCall4);
-  myPortfolio2.push_back(europeanPut4);
-
-  // Adding American options
-  Trade *americanCall3 = new AmericanOption(Date(2025, 5, 19), 105.0, Call);
-  Trade *americanPut3 = new AmericanOption(Date(2026, 6, 20), 100.0, Put);
-  Trade *americanCall4 = new AmericanOption(Date(2027, 7, 21), 110.0, BinaryCall);
-  Trade *americanPut4 = new AmericanOption(Date(2028, 8, 22), 95.0, BinaryPut);
-  myPortfolio2.push_back(americanCall3);
-  myPortfolio2.push_back(americanPut3);
-  myPortfolio2.push_back(americanCall4);
-  myPortfolio2.push_back(americanPut4);
-
-
 vector<double> europeanPrices;
 vector<double> americanPrices;
+
+// Adding European options
+Trade *europeanCall3 = new EuropeanOption(Date(2025, 5, 19), 105.0, Call);
+Trade *europeanPut3 = new EuropeanOption(Date(2026, 6, 20), 100.0, Put);
+Trade *europeanCall4 = new EuropeanOption(Date(2027, 7, 21), 110.0, BinaryCall);
+Trade *europeanPut4 = new EuropeanOption(Date(2028, 8, 22), 95.0, BinaryPut);
+myPortfolio2.push_back(europeanCall3);
+myPortfolio2.push_back(europeanPut3);
+myPortfolio2.push_back(europeanCall4);
+myPortfolio2.push_back(europeanPut4);
+
+// Adding American options
+Trade *americanCall3 = new AmericanOption(Date(2025, 5, 19), 105.0, Call);
+Trade *americanPut3 = new AmericanOption(Date(2026, 6, 20), 100.0, Put);
+Trade *americanCall4 = new AmericanOption(Date(2027, 7, 21), 110.0, BinaryCall);
+Trade *americanPut4 = new AmericanOption(Date(2028, 8, 22), 95.0, BinaryPut);
+myPortfolio2.push_back(americanCall3);
+myPortfolio2.push_back(americanPut3);
+myPortfolio2.push_back(americanCall4);
+myPortfolio2.push_back(americanPut4);
 
 for (const auto &trade : myPortfolio2) {
     if (EuropeanOption* europeanOption = dynamic_cast<EuropeanOption*>(trade)) {
@@ -312,10 +296,17 @@ for (size_t i = 0; i < europeanPrices.size(); ++i) {
     cout << "CRR Binomial Tree Price for American Option: " << americanPrices[i] << endl;
 }
 
+// Cleanup: Deleting the trades
+for (const auto &trade : myPortfolio2) {
+    delete trade;
+}
+myPortfolio2.clear(); // Not necessary but good practice to clear the vector
+
+
 cout << "\nEnd of Task 4\n\n" << endl;
 
 
-  // final
-  cout << "\nProject build successfully!" << endl;
-  return 0;
+// final
+cout << "\nProject build successfully!" << endl;
+return 0;
 }

@@ -20,38 +20,17 @@ double Pricer::Price(const Market& mkt, Trade* trade) {
 }
 
 //Black Model
-//double BlackPricer::Price(const Market& mkt, Trade* trade) {
 double BlackPricer::Price(const Market& mkt, Trade* trade, double S, double r, double vol, double strike, OptionType optType) {
-//double BlackPricer::Price(const Market& mkt, Trade* trade, double S, double r, double vol, OptionType optType) {
-    BlackModelPricer blackModelPricer;
-    //double S = 100; // Example spot price, get actual data from Market
-    //double r = 0.05; // Example risk-free rate, get actual data from Market
-    //double vol = 0.2; // Example volatility, get actual data from Market
-    double T = trade->GetExpiry() - mkt.asOf; // Time to maturity
-    //double strike = trade->getStrike();
-    //OptionType optType = trade ->getType();
-
-    //double strike = 105; // Example strike, get actual data from Trade
-    //OptionType optType = BinaryPut; // Example option type, get actual data from Trade
-
-    //return Price(S, r, vol, T, strike, optType);
-    return blackModelPricer.Price(S, r, vol, T, strike, optType);
+  BlackModelPricer blackModelPricer;
+  double T = trade->GetExpiry() - mkt.asOf; // Time to maturity
+  return blackModelPricer.Price(S, r, vol, T, strike, optType);
 }
 
 
 //Binomial Tree Model
-//double BinomialTreePricer::PriceTree(const Market& mkt, const TreeProduct& trade) {
 double BinomialTreePricer::PriceTree(const Market& mkt, const TreeProduct& trade, double stockPrice, double vol, double rate) {
-  // model setup
   double T = trade.GetExpiry() - mkt.asOf;
   double dt = T / nTimeSteps;
-  // double stockPrice = 100; // Example assignment
-  // double vol = 0.2;        // Example assignment
-  // double rate = 0.03;      // Example assignment
-  //double stockPrice, vol, rate;
-  /*
-  get these data for the deal from market object
-  */
   ModelSetup(stockPrice, vol, rate, dt);
   
   // initialize

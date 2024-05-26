@@ -141,8 +141,3 @@ int Date::daysInMonth(int month, int year) const
     }
     return daysInMonth[month - 1];
 }
-
-// double Date::GetYearFraction() const
-// {
-//     return year + month / 12.0 + day / 365.0;
-// }

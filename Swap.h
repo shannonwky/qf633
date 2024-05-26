@@ -16,10 +16,6 @@ public:
     double getAnnuity(const RateCurve &curve) const;
     void Print() const override;
 
-    // This is from template file
-    //  Swap(Date start, Date end, double _notional, double _price): Trade("SwapTrade", start) {
-    //  inline double Payoff(double marketPrice) const { return 0; };
-    //  double getAnnuity() const; //implement this in a cpp file
 private:
     Date startDate;
     Date maturityDate;
