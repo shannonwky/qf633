@@ -326,7 +326,7 @@ for (const auto &trade : myPortfolio2) {
 for (size_t i = 0; i < europeanPrices.size(); ++i) {
     cout << "CRR Binomial Tree Price for European Option: " << europeanPrices[i] << " vs ";
     cout << "CRR Binomial Tree Price for American Option: " << americanPrices[i];
-    cout << " , Option Type: " << optionTypeStrings[i] << endl;
+    cout << " , Option Type: " << optionTypeStrings1[i] << endl;
 }
 
 // Cleanup: Deleting the trades
