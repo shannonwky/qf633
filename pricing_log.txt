@@ -1,32 +1,32 @@
-Trade with expiry: 0 0 0
- has PV: 1.035e+09
-Trade with expiry: 0 0 0
- has PV: 4.95e+08
-Trade with expiry: 0 0 0
- has PV: 1.515e+09
-Trade with expiry: 0 0 0
- has PV: 7.35e+08
-Trade with expiry: 0 0 0
- has PV: 3.04933e-316
-Trade with expiry: 0 0 0
- has PV: 3.04933e-316
-Trade with expiry: 0 0 0
- has PV: 3.04933e-316
-Trade with expiry: 0 0 0
- has PV: 3.04933e-316
-Trade with expiry: 2025 5 19
- has PV: 100
-Trade with expiry: 2026 5 19
- has PV: 8.2337e-25
-Trade with expiry: 2025 11 19
- has PV: 100
-Trade with expiry: 2026 11 19
- has PV: 7.70556e-25
-Trade with expiry: 2025 5 19
- has PV: 100
-Trade with expiry: 2026 5 19
- has PV: 0.233958
-Trade with expiry: 2025 11 19
- has PV: 100
-Trade with expiry: 2026 11 19
- has PV: 0.221313
+Unknown trade type
+Unknown trade type
+Unknown trade type
+Unknown trade type
+Trade ID: 5, Swap start date: 2023 1 1
+, Swap maturity date: 2025 1 1
+ has PV: 39.8899
+Trade ID: 6, Swap start date: 2023 1 1
+, Swap maturity date: 2026 1 1
+ has PV: 1395.52
+Trade ID: 7, Swap start date: 2023 1 1
+, Swap maturity date: 2024 1 1
+ has PV: 118.98
+Trade ID: 8, Swap start date: 2023 1 1
+, Swap maturity date: 2027 1 1
+ has PV: 2791.04
+Trade ID: 9, European Option with expiry: 2025 5 19
+ has PV: 7.21843
+Trade ID: 10, European Option with expiry: 2026 5 19
+ has PV: 8.02166
+Trade ID: 11, European Option with expiry: 2025 11 19
+ has PV: 0.382946
+Trade ID: 12, European Option with expiry: 2026 11 19
+ has PV: 0.322813
+Trade ID: 13, American Option with expiry: 2025 5 19
+ has PV: 5.29538
+Trade ID: 14, American Option with expiry: 2026 5 19
+ has PV: 6.74307
+Trade ID: 15, American Option with expiry: 2025 11 19
+ has PV: 0.558939
+Trade ID: 16, American Option with expiry: 2026 11 19
+ has PV: 0.506371

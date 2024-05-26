@@ -9,6 +9,7 @@
 #include "Bond.h"
 #include "Swap.h"
 #include "FileUtils.h"
+#include "TreeProduct.h"
 
 /*
 for above, there is no need to put all header file here right? 
@@ -91,12 +92,14 @@ int main()
   std::cout << "Task 2:\n\n";
   vector<Trade *> myPortfolio;
 
+  int tradeID = 1;
+
   // Bonds
   // Adding bonds
-  Trade *bond1 = new Bond(Date(2024, 1, 1), Date(2034, 1, 1), 10000000, 103.5);
-  Trade *bond2 = new Bond(Date(2024, 1, 1), Date(2029, 1, 1), 5000000, 99.0);
-  Trade *bond3 = new Bond(Date(2024, 1, 1), Date(2030, 1, 1), 15000000, 101.0);
-  Trade *bond4 = new Bond(Date(2024, 1, 1), Date(2027, 1, 1), 7500000, 98.0);
+  Trade *bond1 = new Bond(tradeID++ ,Date(2024, 1, 1), Date(2034, 1, 1), 10000000, 103.5);
+  Trade *bond2 = new Bond(tradeID++ ,Date(2024, 1, 1), Date(2029, 1, 1), 5000000, 99.0);
+  Trade *bond3 = new Bond(tradeID++ ,Date(2024, 1, 1), Date(2030, 1, 1), 15000000, 101.0);
+  Trade *bond4 = new Bond(tradeID++ ,Date(2024, 1, 1), Date(2027, 1, 1), 7500000, 98.0);
   myPortfolio.push_back(bond1);
   myPortfolio.push_back(bond2);
   myPortfolio.push_back(bond3);
@@ -104,30 +107,30 @@ int main()
 
   // Swaps
   // Adding swaps
-  Trade *swap1 = new Swap(Date(2023, 1, 1), Date(2025, 1, 1), 1000000, 0.05, 0.04, 1);
-  Trade *swap2 = new Swap(Date(2023, 1, 1), Date(2026, 1, 1), 2000000, 0.04, 0.03, 2);
-  Trade *swap3 = new Swap(Date(2023, 1, 1), Date(2024, 1, 1), 3000000, 0.06, 0.05, 1);
-  Trade *swap4 = new Swap(Date(2023, 1, 1), Date(2027, 1, 1), 4000000, 0.03, 0.02, 2);
+  Trade *swap1 = new Swap(tradeID++ ,Date(2023, 1, 1), Date(2025, 1, 1), 1000000, 0.05, 0.04, 1);
+  Trade *swap2 = new Swap(tradeID++ ,Date(2023, 1, 1), Date(2026, 1, 1), 2000000, 0.04, 0.03, 2);
+  Trade *swap3 = new Swap(tradeID++ ,Date(2023, 1, 1), Date(2024, 1, 1), 3000000, 0.06, 0.05, 1);
+  Trade *swap4 = new Swap(tradeID++ ,Date(2023, 1, 1), Date(2027, 1, 1), 4000000, 0.03, 0.02, 2);
   myPortfolio.push_back(swap1);
   myPortfolio.push_back(swap2);
   myPortfolio.push_back(swap3);
   myPortfolio.push_back(swap4);
 
   // Adding European options
-  Trade *europeanCall1 = new EuropeanOption(Date(2025, 5, 19), 105.0, Call);
-  Trade *europeanPut1 = new EuropeanOption(Date(2026, 5, 19), 100.0, Put);
-  Trade *europeanCall2 = new EuropeanOption(Date(2025, 11, 19), 110.0, BinaryCall);
-  Trade *europeanPut2 = new EuropeanOption(Date(2026, 11, 19), 95.0, BinaryPut);
+  Trade *europeanCall1 = new EuropeanOption(tradeID++ ,Date(2025, 5, 19), 105.0, Call);
+  Trade *europeanPut1 = new EuropeanOption(tradeID++ ,Date(2026, 5, 19), 100.0, Put);
+  Trade *europeanCall2 = new EuropeanOption(tradeID++ ,Date(2025, 11, 19), 110.0, BinaryCall);
+  Trade *europeanPut2 = new EuropeanOption(tradeID++ ,Date(2026, 11, 19), 95.0, BinaryPut);
   myPortfolio.push_back(europeanCall1);
   myPortfolio.push_back(europeanPut1);
   myPortfolio.push_back(europeanCall2);
   myPortfolio.push_back(europeanPut2);
 
   // Adding American options
-  Trade *americanCall1 = new AmericanOption(Date(2025, 5, 19), 110.0, Call);
-  Trade *americanPut1 = new AmericanOption(Date(2026, 5, 19), 95.0, Put);
-  Trade *americanCall2 = new AmericanOption(Date(2025, 11, 19), 115.0, BinaryCall);
-  Trade *americanPut2 = new AmericanOption(Date(2026, 11, 19), 90.0, BinaryPut);
+  Trade *americanCall1 = new AmericanOption(tradeID++ ,Date(2025, 5, 19), 110.0, Call);
+  Trade *americanPut1 = new AmericanOption(tradeID++ ,Date(2026, 5, 19), 95.0, Put);
+  Trade *americanCall2 = new AmericanOption(tradeID++ ,Date(2025, 11, 19), 115.0, BinaryCall);
+  Trade *americanPut2 = new AmericanOption(tradeID++ ,Date(2026, 11, 19), 90.0, BinaryPut);
   myPortfolio.push_back(americanCall1);
   myPortfolio.push_back(americanPut1);
   myPortfolio.push_back(americanCall2);
@@ -154,41 +157,65 @@ double stockPrice = 100; // Get stock price from market object
 double vol = 0.2; // Get volatility from market object
 double rate = 0.03; // Get interest rate from market object
 
+// Open a log file to store pricing results
+std::ofstream logFile("pricing_log.txt");
+
 for (const auto &trade : myPortfolio) {
+
+    double pv = 0.0;
+
     if (AmericanOption* americanOption = dynamic_cast<AmericanOption*>(trade)) {
         OptionType optType = americanOption->getPayoffType();
         // Pricing logic for American option
         CRRBinomialTreePricer crrPricer(nTimeSteps);
-        double crrPrice = crrPricer.PriceTree(mkt, *americanOption, stockPrice, vol, rate);
+        //double crrPrice = crrPricer.PriceTree(mkt, *americanOption, stockPrice, vol, rate);
+        pv = crrPricer.PriceTree(mkt, *americanOption, stockPrice, vol, rate);
         // cout << "Market Type:" << mkt << endl;
         // cout << "Option Type:" << optType<< endl;
-        cout << "CRR Binomial Tree Price for American Option: " << crrPrice << endl;
+        cout << "CRR Binomial Tree Price for American Option: " << pv << endl;
+        logFile << "Trade ID: " + std::to_string(americanOption->GetTradeID()) + ", American Option with expiry: " << americanOption->GetExpiry() << " has PV: " << pv << std::endl;
     }
     
     else if (EuropeanOption* europeanOption = dynamic_cast<EuropeanOption*>(trade)) {
         OptionType optType = europeanOption->getPayoffType();
         // Pricing logic for European option
         CRRBinomialTreePricer crrPricer(nTimeSteps);
-        double crrPrice = crrPricer.PriceTree(mkt, *europeanOption, stockPrice, vol, rate);
-        cout << "CRR Binomial Tree Price for European Option: " << crrPrice << endl;
+        //double crrPrice = crrPricer.PriceTree(mkt, *europeanOption, stockPrice, vol, rate);
+        pv = crrPricer.PriceTree(mkt, *europeanOption, stockPrice, vol, rate);
+        cout << "CRR Binomial Tree Price for European Option: " << pv << endl;
+        logFile << "Trade ID: " + std::to_string(europeanOption->GetTradeID()) + ", European Option with expiry: " << europeanOption->GetExpiry() << " has PV: " << pv << std::endl;
     }
 
     else if (Swap* swap = dynamic_cast<Swap*>(trade)) {
         double annuity = swap->getAnnuity(curve);
         // Calculate payoff using the annuity and market rate
-        double payoff = swap->Payoff(annuity);
+        pv = swap->Payoff(annuity);
         //cout << "Annunity for Swap: " << annuity << endl;
-        cout << "Payoff for Swap: " << payoff << endl;
+        cout << "Payoff for Swap: " << pv << endl;
+        //logFile << "Trade ID: " + std::to_string(swap->GetTradeID()) + ", Swap start date: " << swap->GetStart() << ", Swap maturity date: " << swap->GetExpiry() << " has PV: " << pv << std::endl;
+
+        logFile << "Trade ID: " << swap->GetTradeID() 
+                << ", Swap start date: " << swap->GetStart()
+                << ", Swap maturity date: " << swap->GetExpiry()
+                << " has PV: " << pv << std::endl;
+    }
+
+    else {
+        logFile << "Unknown trade type" << std::endl;
     }
 
 }
 
-// Cleanup: Deleting the trades
-for (const auto &trade : myPortfolio) {
-    delete trade;
-}
-myPortfolio.clear(); // Not necessary but good practice to clear the vector
-std::cout << "\nEnd of Task 3\n\n";
+    // Close the log file
+    logFile.close();
+
+    // Clean up
+    for (auto trade : myPortfolio) {
+        delete trade;
+    }
+
+    myPortfolio.clear(); // Not necessary but good practice to clear the vector     
+    std::cout << "\nEnd of Task 3\n\n";
 
 
 // task 4, analyzing pricing result
@@ -205,10 +232,10 @@ vector<double> BlackModelPrices;
 BlackPricer blackPricer;
 
 // Adding European options
-Trade *europeanCall31 = new EuropeanOption(Date(2025, 5, 19), 105.0, Call);
-Trade *europeanPut31 = new EuropeanOption(Date(2026, 6, 20), 100.0, Put);
-Trade *europeanCall41 = new EuropeanOption(Date(2027, 7, 21), 110.0, BinaryCall);
-Trade *europeanPut41 = new EuropeanOption(Date(2028, 8, 22), 95.0, BinaryPut);
+Trade *europeanCall31 = new EuropeanOption(0,Date(2025, 5, 19), 105.0, Call);
+Trade *europeanPut31 = new EuropeanOption(0,Date(2026, 6, 20), 100.0, Put);
+Trade *europeanCall41 = new EuropeanOption(0,Date(2027, 7, 21), 110.0, BinaryCall);
+Trade *europeanPut41 = new EuropeanOption(0,Date(2028, 8, 22), 95.0, BinaryPut);
 myPortfolio3.push_back(europeanCall31);
 myPortfolio3.push_back(europeanPut31);
 myPortfolio3.push_back(europeanCall41);
@@ -225,7 +252,7 @@ for (const auto &trade : myPortfolio3) {
         // // Pricing logic for European option
         CRRBinomialTreePricer crrPricer1(nTimeSteps);
         double europeanPrice = crrPricer1.PriceTree(mkt, *europeanOption, stockPrice, vol, rate);
-        EuropeanOption option(expiry, strike, optType);
+        EuropeanOption option(0, expiry, strike, optType);
         double Blackprice = blackPricer.Price(mkt, &option, stockPrice, rate, vol, strike, optType);
         europeanPrices1.push_back(europeanPrice); // Store European option price
         BlackModelPrices.push_back(Blackprice); // Store European option price
@@ -255,20 +282,20 @@ vector<double> europeanPrices;
 vector<double> americanPrices;
 
 // Adding European options
-Trade *europeanCall3 = new EuropeanOption(Date(2025, 5, 19), 105.0, Call);
-Trade *europeanPut3 = new EuropeanOption(Date(2026, 6, 20), 100.0, Put);
-Trade *europeanCall4 = new EuropeanOption(Date(2027, 7, 21), 110.0, BinaryCall);
-Trade *europeanPut4 = new EuropeanOption(Date(2028, 8, 22), 95.0, BinaryPut);
+Trade *europeanCall3 = new EuropeanOption(0,Date(2025, 5, 19), 105.0, Call);
+Trade *europeanPut3 = new EuropeanOption(0,Date(2026, 6, 20), 100.0, Put);
+Trade *europeanCall4 = new EuropeanOption(0,Date(2027, 7, 21), 110.0, BinaryCall);
+Trade *europeanPut4 = new EuropeanOption(0,Date(2028, 8, 22), 95.0, BinaryPut);
 myPortfolio2.push_back(europeanCall3);
 myPortfolio2.push_back(europeanPut3);
 myPortfolio2.push_back(europeanCall4);
 myPortfolio2.push_back(europeanPut4);
 
 // Adding American options
-Trade *americanCall3 = new AmericanOption(Date(2025, 5, 19), 105.0, Call);
-Trade *americanPut3 = new AmericanOption(Date(2026, 6, 20), 100.0, Put);
-Trade *americanCall4 = new AmericanOption(Date(2027, 7, 21), 110.0, BinaryCall);
-Trade *americanPut4 = new AmericanOption(Date(2028, 8, 22), 95.0, BinaryPut);
+Trade *americanCall3 = new AmericanOption(0,Date(2025, 5, 19), 105.0, Call);
+Trade *americanPut3 = new AmericanOption(0,Date(2026, 6, 20), 100.0, Put);
+Trade *americanCall4 = new AmericanOption(0,Date(2027, 7, 21), 110.0, BinaryCall);
+Trade *americanPut4 = new AmericanOption(0,Date(2028, 8, 22), 95.0, BinaryPut);
 myPortfolio2.push_back(americanCall3);
 myPortfolio2.push_back(americanPut3);
 myPortfolio2.push_back(americanCall4);

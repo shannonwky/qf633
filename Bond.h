@@ -24,8 +24,8 @@
 class Bond : public Trade
 {
 public:
-    Bond(Date start, Date end, double _notional, double _price)
-        : Trade("BondTrade", start), startDate(start), maturityDate(end), notional(_notional), tradePrice(_price) {}
+    Bond(int id, Date start, Date end, double _notional, double _price)
+        : Trade(id, "BondTrade", start), startDate(start), maturityDate(end), notional(_notional), tradePrice(_price) {}
 
     double Payoff(double marketPrice) const override
     {

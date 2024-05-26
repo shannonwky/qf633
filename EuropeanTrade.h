@@ -5,11 +5,12 @@
 #include "TreeProduct.h"
 #include "Payoff.h"
 #include "Types.h"
+#include "Trade.h"
 
 class EuropeanOption : public TreeProduct
 {
 public:
-  EuropeanOption(const Date &expiry, double strike, OptionType optType) : expiry(expiry), strike(strike), optType(optType) {}
+  EuropeanOption(int id, const Date &expiry, double strike, OptionType optType) : id(id), expiry(expiry), strike(strike), optType(optType) {}
 
   virtual double Payoff(double S) const override
   {
@@ -21,6 +22,7 @@ public:
     return continuation;
   }
 
+  inline int GetTradeID() const { return id; }
   virtual const Date &GetExpiry() const override { return expiry; }
   virtual double getStrike() const { return strike; }
   virtual OptionType getPayoffType() const { return optType; }
@@ -30,6 +32,7 @@ private:
   OptionType optType;
   double strike;
   Date expiry;
+  int (id);
 };
 
 class EuroCallSpread : public TreeProduct

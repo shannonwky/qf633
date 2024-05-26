@@ -7,13 +7,22 @@ using namespace std;
 class Trade {
 public:
     Trade(){};
-    Trade(const string& _type,Date _tradeDate): tradeType(_type), tradeDate(_tradeDate) {};
+    //int GetTradeID() const { return tradeID; } // NEW
+    Trade(int _ID, const string& _type,Date _tradeDate): tradeID(_ID), tradeType(_type), tradeDate(_tradeDate) {};
+
+    inline int GetTradeID() const { return tradeID; }
     inline string getType(){ return tradeType; };
     virtual double Payoff(double marketPrice) const = 0;
-    virtual const Date& GetExpiry() const 
+    virtual const Date& GetExpiry() const
     { 
-    return expiryDate; //tft: maybe it's expiry instead? kiv
+    return expiryDate; 
     }
+    virtual const Date& GetStart() const
+    { 
+    return tradeDate; 
+    }
+
+
     virtual void Print() const = 0;
     // virtual void Print() const {
     //     cout << "Trade Type: " << tradeType << endl;
@@ -24,9 +33,12 @@ public:
 
     //virtual Date GetExpiry() const = 0; //Added new
     virtual ~Trade(){};
-    
 
-protected:   
+// private:
+//     int tradeID; //NEW
+
+protected:
+    int tradeID; //new
     string tradeType;
     Date tradeDate;
     Date expiryDate;

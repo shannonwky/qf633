@@ -11,7 +11,7 @@
 class AmericanOption : public TreeProduct
 {
 public:
-  AmericanOption(const Date &expiry, double strike, OptionType optType) : expiry(expiry), strike(strike), optType(optType) {}
+  AmericanOption(int id, const Date &expiry, double strike, OptionType optType) : id(id), expiry(expiry), strike(strike), optType(optType) {}
 
   virtual double Payoff(double S) const override
   {
@@ -23,6 +23,7 @@ public:
     return max(Payoff(S), continuation);
   }
 
+  inline int GetTradeID() const { return id; }
   virtual const Date &GetExpiry() const override { return expiry; }
   virtual double getStrike() const { return strike; }
   virtual OptionType getPayoffType() const { return optType; }
@@ -32,6 +33,7 @@ private:
   OptionType optType;
   double strike;
   Date expiry;
+  int id;
 };
 
 class AmerCallSpread : public TreeProduct

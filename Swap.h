@@ -8,10 +8,13 @@
 class Swap : public Trade
 {
 public:
-    Swap(Date start, Date end, double _notional, double _tradeRate, double _marketRate, double _frequency)
-        : Trade("SwapTrade", start), startDate(start), maturityDate(end), notional(_notional),
+    Swap(int id, Date start, Date end, double _notional, double _tradeRate, double _marketRate, double _frequency)
+        : Trade(id, "SwapTrade", start), startDate(start), maturityDate(end), notional(_notional),
           tradeRate(_tradeRate), marketRate(_marketRate), frequency(_frequency) {}
 
+    
+    virtual const Date &GetStart() const override { return startDate; }
+    virtual const Date &GetExpiry() const override { return maturityDate; }
     double Payoff(double marketRate) const override;
     double getAnnuity(const RateCurve &curve) const;
     void Print() const override;
