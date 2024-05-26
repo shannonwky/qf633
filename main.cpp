@@ -9,7 +9,7 @@
 #include "Bond.h"
 #include "Swap.h"
 #include "FileUtils.h"
-#include "TreeProduct.h"
+
 
 /*
 for above, there is no need to put all header file here right? 
@@ -229,6 +229,7 @@ vector<Trade *> myPortfolio3;
 
 vector<double> europeanPrices1;
 vector<double> BlackModelPrices;
+std::vector<std::string> optionTypeStrings;
 BlackPricer blackPricer;
 
 // Adding European options
@@ -256,7 +257,7 @@ for (const auto &trade : myPortfolio3) {
         double Blackprice = blackPricer.Price(mkt, &option, stockPrice, rate, vol, strike, optType);
         europeanPrices1.push_back(europeanPrice); // Store European option price
         BlackModelPrices.push_back(Blackprice); // Store European option price
-
+        optionTypeStrings.push_back(OptionTypeToString(optType));
 
     }
 }
@@ -264,7 +265,8 @@ for (const auto &trade : myPortfolio3) {
 // Print comparison
 for (size_t i = 0; i < europeanPrices1.size(); ++i) {
     cout << "CRR Binomial Tree Price for European Option: " << europeanPrices1[i] << " vs ";
-    cout << "Black Model: " << BlackModelPrices[i] << endl;
+    cout << "Black Model: " << BlackModelPrices[i];
+    cout << " , Option Type: " << optionTypeStrings[i] << endl;
 }
 
 // Cleanup: Deleting the trades
@@ -280,6 +282,7 @@ std::cout << "\nTask 4b: Compare CRR binomial tree result for an European option
 vector<Trade *> myPortfolio2;
 vector<double> europeanPrices;
 vector<double> americanPrices;
+std::vector<std::string> optionTypeStrings1;
 
 // Adding European options
 Trade *europeanCall3 = new EuropeanOption(0,Date(2025, 5, 19), 105.0, Call);
@@ -314,13 +317,16 @@ for (const auto &trade : myPortfolio2) {
         CRRBinomialTreePricer crrPricer(nTimeSteps);
         double americanPrice = crrPricer.PriceTree(mkt, *americanOption, stockPrice, vol, rate);
         americanPrices.push_back(americanPrice); // Store American option price
+        optionTypeStrings1.push_back(OptionTypeToString(optType));
+        
     }
 }
 
 // Print comparison
 for (size_t i = 0; i < europeanPrices.size(); ++i) {
     cout << "CRR Binomial Tree Price for European Option: " << europeanPrices[i] << " vs ";
-    cout << "CRR Binomial Tree Price for American Option: " << americanPrices[i] << endl;
+    cout << "CRR Binomial Tree Price for American Option: " << americanPrices[i];
+    cout << " , Option Type: " << optionTypeStrings[i] << endl;
 }
 
 // Cleanup: Deleting the trades

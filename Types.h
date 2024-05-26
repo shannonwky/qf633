@@ -10,4 +10,6 @@ enum OptionType
     BinaryPut
 };
 
+const char* OptionTypeToString(OptionType type);
+
 #endif
