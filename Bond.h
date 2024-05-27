@@ -27,12 +27,10 @@ public:
     Bond(int id, Date start, Date end, double _notional, double _price)
         : Trade(id, "BondTrade", start), startDate(start), maturityDate(end), notional(_notional), tradePrice(_price) {}
 
-    double Payoff(double marketPrice) const override
-    {
-        // Assuming that the payoff is the difference between the trade price and the market price times the notional.
-        return notional * (tradePrice - marketPrice);
-    }
-
+ 
+    virtual const Date &GetStart() const override { return startDate; }
+    virtual const Date &GetExpiry() const override { return maturityDate; }
+    double Payoff(double marketPrice) const override;
     void Print() const override;
 
     // Date GetExpiry() const override {

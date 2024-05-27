@@ -20,17 +20,31 @@ double Pricer::Price(const Market& mkt, Trade* trade) {
 }
 
 //Black Model
-double BlackPricer::Price(const Market& mkt, Trade* trade, double S, double r, double vol, double strike, OptionType optType) {
+//double BlackPricer::Price(const Market& mkt, Trade* trade, double S, double r, double vol, double strike, OptionType optType) {
+//double BlackPricer::Price(const Market& mkt, const TreeProduct& trade, double S, double r, double vol, double strike, OptionType optType) {
+double BlackPricer::Price(const Market& mkt, const TreeProduct& trade, double S, const RateCurve &curve, const VolCurve &volCurve, double strike, OptionType optType) {
   BlackModelPricer blackModelPricer;
-  double T = trade->GetExpiry() - mkt.asOf; // Time to maturity
-  return blackModelPricer.Price(S, r, vol, T, strike, optType);
+  //double T = trade->GetExpiry() - mkt.asOf; // Time to maturity
+  double T = trade.GetExpiry() - mkt.asOf;
+  double days_left = T * 365.25;
+  std::string tenor = std::to_string(T) + "Y";
+  double rate = curve.getRate(tenor) * 0.01;
+  double vol = volCurve.getVol(days_left) *0.01;
+  return blackModelPricer.Price(S, rate, vol, T, strike, optType);
 }
 
 
 //Binomial Tree Model
-double BinomialTreePricer::PriceTree(const Market& mkt, const TreeProduct& trade, double stockPrice, double vol, double rate) {
+std::tuple<double, double, double, double> BinomialTreePricer::PriceTree(const Market& mkt, const TreeProduct& trade, double stockPrice, const VolCurve &volCurve, const RateCurve &curve) {
+//double BinomialTreePricer::PriceTree(const Market& mkt, const TreeProduct& trade, double stockPrice, const VolCurve &volCurve, const RateCurve &curve) {
   double T = trade.GetExpiry() - mkt.asOf;
   double dt = T / nTimeSteps;
+  double days_left = T * 365.25;
+  std::string tenor = std::to_string(T) + "Y";
+  double rate = curve.getRate(tenor) * 0.01;
+  double vol = volCurve.getVol(days_left) *0.01;
+
+  
   ModelSetup(stockPrice, vol, rate, dt);
   
   // initialize
@@ -39,7 +53,7 @@ double BinomialTreePricer::PriceTree(const Market& mkt, const TreeProduct& trade
   }    
   
   // price by backward induction
-  for (int k = nTimeSteps-1; k >= 0; k--)
+  for (int k = nTimeSteps-1; k >= 0; k--){
     for (int i = 0; i <= k; i++) {
     // calculate continuation value
       double df = exp(-rate *dt);	  
@@ -47,8 +61,11 @@ double BinomialTreePricer::PriceTree(const Market& mkt, const TreeProduct& trade
       // calculate the option value at node(k, i)
       states[i] = trade.ValueAtNode( GetSpot(k, i), dt*k, continuation);
     }
+  }
 
-  return states[0];
+  double optionPrice = states[0];
+  
+  return std::make_tuple(optionPrice, days_left, rate, vol);
 
 }
 

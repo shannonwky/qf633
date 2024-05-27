@@ -1,32 +1,80 @@
-Unknown trade type
-Unknown trade type
-Unknown trade type
-Unknown trade type
-Trade ID: 5, Swap start date: 2023 1 1
-, Swap maturity date: 2025 1 1
- has PV: 39.8899
-Trade ID: 6, Swap start date: 2023 1 1
-, Swap maturity date: 2026 1 1
- has PV: 1395.52
-Trade ID: 7, Swap start date: 2023 1 1
-, Swap maturity date: 2024 1 1
- has PV: 118.98
-Trade ID: 8, Swap start date: 2023 1 1
-, Swap maturity date: 2027 1 1
- has PV: 2791.04
-Trade ID: 9, European Option with expiry: 2025 5 19
- has PV: 7.21843
-Trade ID: 10, European Option with expiry: 2026 5 19
- has PV: 8.02166
-Trade ID: 11, European Option with expiry: 2025 11 19
- has PV: 0.382946
-Trade ID: 12, European Option with expiry: 2026 11 19
- has PV: 0.322813
-Trade ID: 13, American Option with expiry: 2025 5 19
- has PV: 5.29538
-Trade ID: 14, American Option with expiry: 2026 5 19
- has PV: 6.74307
-Trade ID: 15, American Option with expiry: 2025 11 19
- has PV: 0.558939
-Trade ID: 16, American Option with expiry: 2026 11 19
- has PV: 0.506371
+Trade ID: 1
+ Trade type: Bond 
+ Start date: 2024 1 1
+ Maturity date: 2034 1 1
+ Payoff : 3.5e+07
+Trade ID: 2
+ Trade type: Bond 
+ Start date: 2024 1 1
+ Maturity date: 2029 1 1
+ Payoff : -5e+06
+Trade ID: 3
+ Trade type: Bond 
+ Start date: 2024 1 1
+ Maturity date: 2030 1 1
+ Payoff : 1.5e+07
+Trade ID: 4
+ Trade type: Bond 
+ Start date: 2024 1 1
+ Maturity date: 2027 1 1
+ Payoff : -1.5e+07
+Trade ID: 5
+ Trade type: Swap 
+ Start date: 2023 1 1
+ Maturity date: 2025 1 1
+ Present Value : 39.8899
+Trade ID: 6
+ Trade type: Swap 
+ Start date: 2023 1 1
+ Maturity date: 2026 1 1
+ Present Value : 1395.52
+Trade ID: 7
+ Trade type: Swap 
+ Start date: 2023 1 1
+ Maturity date: 2024 1 1
+ Present Value : 118.98
+Trade ID: 8
+ Trade type: Swap 
+ Start date: 2023 1 1
+ Maturity date: 2027 1 1
+ Present Value : 2791.04
+Trade ID: 9
+ Trade type: European Option 
+ Start date: 2024 5 27
+ Maturity date: 2025 5 19
+ Present Value : 6.08336
+Trade ID: 10
+ Trade type: European Option 
+ Start date: 2024 5 27
+ Maturity date: 2026 5 19
+ Present Value : 3.79563
+Trade ID: 11
+ Trade type: European Option 
+ Start date: 2024 5 27
+ Maturity date: 2025 11 19
+ Present Value : 0.484453
+Trade ID: 12
+ Trade type: European Option 
+ Start date: 2024 5 27
+ Maturity date: 2026 11 19
+ Present Value : 0.201221
+Trade ID: 13
+ Trade type: American Option 
+ Start date: 2024 5 27
+ Maturity date: 2025 5 19
+ Present Value : 3.82482
+Trade ID: 14
+ Trade type: American Option 
+ Start date: 2024 5 27
+ Maturity date: 2026 5 19
+ Present Value : 3.29671
+Trade ID: 15
+ Trade type: American Option 
+ Start date: 2024 5 27
+ Maturity date: 2025 11 19
+ Present Value : 0.45111
+Trade ID: 16
+ Trade type: American Option 
+ Start date: 2024 5 27
+ Maturity date: 2026 11 19
+ Present Value : 0.384827

@@ -2,6 +2,12 @@
 #include<string>
 #include "Date.h"
 
+#include "Trade.h"
+#include "Date.h"
+#include "Market.h"
+#include <cmath>
+#include <vector>
+
 using namespace std;
 
 class Trade {
@@ -21,6 +27,16 @@ public:
     { 
     return tradeDate; 
     }
+
+    // virtual Date GetRate(const RateCurve &curve) const
+    // {
+    // std::string tenor = std::to_string(expiryDate - tradeDate) + "Y";
+    // //double rate = tenor;
+    // //double rate = curve.getRate(tenor)*0.01;
+    // //return rate;
+    // return expiryDate, tradeDate;
+    // }
+
 
 
     virtual void Print() const = 0;

@@ -1,6 +1,12 @@
 #include "Bond.h"
 #include <iostream>
 
+
+double Bond::Payoff(double marketPrice) const
+{
+    return notional * (tradePrice - marketPrice);
+}
+
 void Bond::Print() const
 {
     std::cout << "Bond: "

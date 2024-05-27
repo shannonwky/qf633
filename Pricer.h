@@ -25,7 +25,9 @@ private:
 class BlackPricer : public Pricer {
 public:
    //double Price(const Market& mkt, Trade* trade) override;
-    double Price(const Market& mkt, Trade* trade, double S, double r, double vol, double strike, OptionType optType);
+    //double Price(const Market& mkt, Trade* trade, double S, double r, double vol, double strike, OptionType optType);
+    double Price(const Market& mkt, const TreeProduct& trade, double S, const RateCurve &curve, const VolCurve &volCurve, double strike, OptionType optType);
+    //double Price(const Market& mkt, const TreeProduct& trade, double S, double r, double vol, double strike, OptionType optType);
 };
 
 
@@ -37,7 +39,9 @@ public:
     nTimeSteps = N;
     states.resize(N+1);
   }
-  double PriceTree(const Market& mkt, const TreeProduct& trade, double stockPrice, double vol, double rate);
+  //double PriceTree(const Market& mkt, const TreeProduct& trade, double stockPrice, double vol, double rate);
+  std::tuple<double, double, double, double> PriceTree(const Market& mkt, const TreeProduct& trade, double stockPrice, const VolCurve &volCurve, const RateCurve &curve);
+  //double PriceTree(const Market& mkt, const TreeProduct& trade, double stockPrice, const VolCurve &volCurve, const RateCurve &curve);
   
 protected:
   virtual void ModelSetup(double S0, double sigma, double rate, double dt) = 0; // pure virtual

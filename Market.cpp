@@ -50,8 +50,10 @@ void VolCurve::addVol(Date tenor, double vol)
   vols.push_back(vol);
 }
 
-double VolCurve::getVol(Date tenor) const
+double VolCurve::getVol(double days) const
 {
+  Date tenor = Date::toDate(days);
+
   if (tenors.empty())
   {
     throw std::runtime_error("No Vols available");

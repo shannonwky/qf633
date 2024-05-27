@@ -22,6 +22,14 @@ public:
     return continuation;
   }
 
+  virtual double getRate(const RateCurve &curve, const Market& mkt) const {
+      double days_left = (expiry - mkt.asOf) * 365.25;
+      std::string tenor = std::to_string((expiry - mkt.asOf)) + "Y";
+      double rate =  curve.getRate(tenor) * 0.01;
+      return rate;
+  }
+  
+
   inline int GetTradeID() const { return id; }
   virtual const Date &GetExpiry() const override { return expiry; }
   virtual double getStrike() const { return strike; }
@@ -32,7 +40,7 @@ private:
   OptionType optType;
   double strike;
   Date expiry;
-  int (id);
+  int id;
 };
 
 class EuroCallSpread : public TreeProduct
