@@ -142,11 +142,6 @@ int main()
     /*
    when you use new, should use delete.
    */
-    for (Trade *trade : myPortfolio)
-    {
-        delete trade;
-    }
-    myPortfolio.clear();
 
     std::cout << "\nEnd of Task 2\n\n";
 
